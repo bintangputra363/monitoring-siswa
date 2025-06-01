@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Clivax Premium Multipurpose Admin & Dashboard Template documentation of HTML" name="description" />
+    <meta name="keywords" content="Clivax admin documentation, Clivax Laravel documentation, Clivax HTML documentation">
+    <meta content="codebucks" name="author" />
+    <title>Monitor Siswa</title>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="images/logoSMP.webpg">
+    <!-- Bootstrap Css -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Custom Css-->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md py-3 fixed-top">
+        <div class="container">
+           <a class="navbar-brand" href="#">
+    <span class="logo-text" style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: bold; color: #4CAF50;">
+        Monitor Siswa
+    </span>
+</a>
+            
+            <span class="badge bg-danger">v1.1.0</span>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="row justify-content-center g-3">
+                <div class="col-md-3 d-none d-md-block">
+                    <div class="card bg-white sidebar-menu shadow border-0 min-vh-100">
+                        <div class="card-body p-4">
+                            <nav id="navbar-example2" class="h-100 flex-column align-items-stretch">
+                                <nav class="nav nav-pills flex-column">
+                                    <a class="nav-link" href="#introduction">
+                                        <i class="mdi mdi-text-box-outline"></i>
+                                        <span>Introduction</span>
+                                    </a>
+                                    <a class="nav-link" href="#setup">
+                                        <i class="mdi mdi-cog-outline"></i>
+                                        <span>Setup</span>
+                                    </a>
+                                    <a class="nav-link" href="#usage">
+                                        <i class="mdi mdi-help-circle-outline"></i>
+                                        <span>Panduan Penggunaan</span>
+                                    </a>
+                                    <a class="nav-link" href="#read-file">
+                                        <i class="mdi mdi-file-outline"></i>
+                                        <span>Baca File</span>
+                                    </a>
+                                    <a class="nav-link" href="#change-log">
+                                        <i class="mdi mdi-format-list-bulleted"></i>
+                                        <span>Changelog</span>
+                                    </a>
+                                </nav>
+                            </nav>
+                        </div>
+                        <!-- end card-body -->
+                    </div>
+                    <!-- end card -->
+                </div>
+                <!-- end col -->
+                <div class="col-md-9">
+                    <div class="card bg-white shadow border-0" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -69px" data-bs-smooth-scroll="true">
+                        <div class="card-body p-4">
+                            <div id="introduction" class="mb-4">
+                                <h5 class="fw-bold mb-4">Introduction</h5>
+                                <p class="alert alert-success border-0">
+                                    Selamat datang di <strong>Monitor Siswa</strong>, aplikasi manajemen siswa berbasis web.
+                                </p>
+                                <p>
+                                    <strong>Monitor Siswa</strong> adalah aplikasi yang dirancang untuk membantu sekolah dalam mengelola data siswa, guru, kelas, dan kegiatan. Aplikasi ini dibangun menggunakan <strong>PHP 8.2</strong> dan <strong>Bootstrap v5.3.3</strong>, dengan antarmuka yang responsif dan mendukung berbagai perangkat.
+                                </p>
+                                <p>
+                                    Fitur utama aplikasi ini meliputi:
+                                </p>
+                                <ul>
+                                    <li><strong>Manajemen Guru:</strong> Tambahkan dan kelola data guru dengan mudah.</li>
+                                    <li><strong>Manajemen Siswa:</strong> Tambahkan dan kelola data siswa secara efisien.</li>
+                                    <li><strong>Mapping Guru ke Kelas:</strong> Hubungkan guru dengan kelas yang mereka ajar.</li>
+                                    <li><strong>Mapping Siswa ke Kegiatan:</strong> Hubungkan siswa dengan kegiatan tertentu.</li>
+                                    <li><strong>Monitoring:</strong> Pantau progress siswa dalam berbagai kegiatan.</li>
+                                </ul>
+                                <p>
+                                    Aplikasi ini mendukung mode terang dan gelap, serta dapat disesuaikan dengan kebutuhan sekolah Anda.
+                                </p>
+                                <h5 class="fw-bold mb-4">📁 Struktur Folder & File</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <pre class="mb-0">
+    ├── Admin
+    |    ├── assets
+    |    |    ├── css
+    |    |    ├── fonts
+    |    |    ├── images
+    |    |    ├── js
+    |    |    ├── libs
+    |    |    └── scss
+    |    ├── partials
+    |    ├── pages
+    |    └── index.php
+    ├── Documentation
+    ├── StarterKit
+    |    ├── assets
+    |    |    ├── css
+    |    |    ├── fonts
+    |    |    ├── images
+    |    |    ├── js
+    |    |    ├── libs
+    |    |    └── scss
+    |    ├── partials
+    |    |    ├── config.php
+    |    |    ├── session.php
+    |    ├── pages
+    |    └── auth-login.php
+    └── monitor_siswa.sql
+                </pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3" id="setup">
+                                <h5 class="fw-bold mb-4">Setup HTML</h5>
+                                <div class="mb-4">
+                                    <h6 class="mt-4 fw-semibold">Description</h6>
+                                    <p>
+                                        <strong>Clivax PHP</strong> is a fully featured premium admin dashboard template built with <strong>Bootstrap v5.3.3</strong> and <strong>PHP v8.2</strong>.
+                                        Please follow below steps to install and setup all
+                                        prerequisites:
+                                    </p>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h6 class="mt-4 fw-semibold">Prerequisites</h6>
+
+                                    <p>
+                                        Please follow below steps to install and setup all
+                                        prerequisites:
+                                    </p>
+
+                                    <ul>
+                                        <li>
+                                            <strong>PHP 8.2</strong>
+                                            <p>
+                                                Make sure to have the <a href="https://www.php.net/" target="_blank">PHP-8.2 </a>or latest version installed &amp; running on your computer.
+                                                If you already have installed PHP on your computer, 
+                                                you can skip this step.
+                                            </p>
+                                        </li>
+
+                                        <li>
+                                            <strong>Xampp</strong>
+                                            <p>
+                                                Make sure to have the the latest version of <a href="https://www.apachefriends.org/" target="_blank">xampp</a> installed &amp; running in your computer.
+                                                If you already have installed Xampp on your computer, you can skip this step.
+                                            </p>
+                                        </li>
+                                        
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h6 class="mt-4 fw-semibold">Installation</h6>
+
+                                    <p>
+                                        To setup the admin theme, follow below-mentioned steps:
+                                    </p>
+
+                                    <ul>
+                                        <li>
+                                            <strong>Install Prerequisites</strong>
+                                            <p>
+                                                Make sure to have all above prerequisites installed
+                                                &amp; running on your computer
+                                            </p>
+                                        </li>
+                                    </ul>
+
+
+                                    <p class="mt-4">
+                                        
+                                        After you finished with the above steps, you can run the following commands into the terminal/command prompt 
+                                        from the root directory ( clivax_v*/PHP/ ) of the project to run the project locally or build for production use:
+                                    
+                                    </p>
+                                    <table class="table table-bordered m-0">
+                                        <thead>
+                                            <tr>
+                                                
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                                    
+                                                <td>
+                                                    Set extract zip to in the file location in <code>c:/xammp/htdos/filename</code>.
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                
+                                                <td>
+                                                    Create a new database with name <code>monitor_siswa,</code> 
+                                                Then import the <code>monitor_siswa.sql</code> file in your database.
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                
+                                                <td>
+                                                    Configure the Database credentials in the config.php file.
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                
+                                                <td>
+                                                    You can test locally with signup as a new user to check all the pages.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div>
+                                    <h6 class="mt-4 fw-bold">Tips</h6>
+                                    <div class="alert alert-warning">
+                                        SCSS: We suggest you to do not change any scss files from the assets/scss/custom folders because to get new updates will might be break your SCSS changes if any you have made. We strongly suggest you
+                                        to create new custom.scss file and use that instead of overwrite
+                                        any theme's custom scss files.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4" id="usage">
+                                <h5 class="fw-bold mb-4">Panduan Penggunaan Aplikasi</h5>
+                                <p>
+                                    Setelah selesai melakukan setup, berikut adalah langkah-langkah untuk menggunakan aplikasi:
+                                </p>
+                                <ol>
+                                    <li>
+                                        <strong>Login:</strong> Masuk ke aplikasi menggunakan akun admin yang telah dibuat.
+                                    </li>
+                                    <li>
+                                        <strong>Tambah Guru:</strong> Gunakan menu <code>Register Guru</code> di bagian atas untuk menambahkan guru baru.
+                                    </li>
+                                    <li>
+                                        <strong>Tambah Siswa:</strong> Gunakan menu <code>Tambah Siswa</code> untuk menambahkan data siswa.
+                                    </li>
+                                    <li>
+                                        <strong>Mapping Guru ke Kelas:</strong> Gunakan fitur <code>Mapping Guru</code> untuk menghubungkan guru dengan kelas tertentu.
+                                    </li>
+                                    <li>
+                                        <strong>Mapping Siswa ke Kegiatan:</strong> Gunakan fitur <code>Mapping Siswa</code> untuk menghubungkan siswa dengan kegiatan tertentu.
+                                    </li>
+                                    <li>
+                                        <strong>Monitoring:</strong> Gunakan halaman <code>Dashboard</code> untuk memantau progress siswa dan kegiatan.
+                                    </li>
+                                </ol>
+                            </div>
+                            <div class="mt-4" id="read-file">
+                                <h5 class="fw-bold mb-4">Baca File Konfigurasi</h5>
+                                <p>
+                                    Anda dapat membaca file konfigurasi aplikasi langsung dari dokumentasi ini. Klik tombol di bawah untuk melihat isi file <code>config.php</code>.
+                                </p>
+                                <button class="btn btn-primary" id="readConfigBtn">Baca File Config</button>
+                                <pre id="fileContent" class="mt-3 p-3 bg-light border rounded" style="display: none;"></pre>
+                            </div>
+                            <div class="mt-4" id="starterkit-intro">
+                                <h5 class="fw-bold mb-4">Menjalankan Aplikasi dari Folder Starterkit</h5>
+                                <p>
+                                    Untuk menjalankan aplikasi ini, pastikan Anda mengikuti langkah-langkah berikut:
+                                </p>
+                                <ol>
+                                    <li>
+                                        Pastikan Anda telah menginstal <strong>XAMPP</strong> atau server lokal lainnya di komputer Anda.
+                                    </li>
+                                    <li>
+                                        Ekstrak file aplikasi ke dalam folder <code>htdocs</code> di direktori instalasi XAMPP Anda. Contoh:
+                                        <pre class="bg-light p-3 border rounded">C:/xampp/htdocs/monitor-siswa/Starterkit</pre>
+                                    </li>
+                                    <li>
+                                        Buka file <code>config.php</code> di folder <code>Starterkit/partials</code> dan sesuaikan kredensial database Anda:
+                                        <pre class="bg-light p-3 border rounded">
+define('DB_SERVER', 'localhost');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', '');
+define('DB_NAME', 'monitor_siswa');
+                                        </pre>
+                                    </li>
+                                    <li>
+                                        Jalankan XAMPP dan aktifkan modul <strong>Apache</strong> dan <strong>MySQL</strong>.
+                                    </li>
+                                    <li>
+                                        Buka browser Anda dan akses aplikasi melalui URL berikut:
+                                        <pre class="bg-light p-3 border rounded">http://localhost/monitor-siswa/Starterkit/auth-login.php</pre>
+                                    </li>
+                                    <li>
+                                        Login menggunakan akun admin yang telah dibuat, atau buat akun baru jika diperlukan.
+                                    </li>
+                                </ol>
+                                <p>
+                                    Setelah langkah-langkah di atas selesai, Anda dapat mulai menggunakan aplikasi untuk mengelola data siswa, guru, kelas, dan kegiatan.
+                                </p>
+                            </div>
+                            <div class="mt-4" id="change-log">
+                                <h5 class="fw-bold mb-4">Changelog</h5>
+                                <div>
+                                    <div id="v-1-2" class="mb-4">
+                                        <h6 class="mb-3">
+                                            <span class="text-primary">v1.1.0</span>
+                                            <small class="text-muted"> - 22 January 2025 </small>
+                                        </h6>
+                                        <ul>
+                                            <li>
+                                                Updated Bootstrap version 5.3.3.
+                                            </li>
+                                            <li>
+                                                Update packages.
+                                            </li>
+                                            <li>
+                                                Fixed minor issues.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div id="v-1-0" class="mb-4">
+                                        <h6 class="mb-3">
+                                            <span class="text-primary">v1.0.0</span>
+                                            <small class="text-muted"> - 30 November 2023 </small>
+                                        </h6>
+                                        <ul>
+                                            <li>
+                                                Initial released
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end card-body -->
+                    </div>
+                    <!-- end card -->
+
+                    <!-- start footer -->
+                    <footer class="footer py-3">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="text-center text-md-start">
+                                        <script>document.write(new Date().getFullYear())</script> © SMP NEGRI 4 KOTA TANGERANG.
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-md-end text-center">
+                                        Crafted with <i class="mdi mdi-heart text-danger"></i> by <a href="index.html" target="_blank" class="text-muted">Elham Hacker</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- end footer -->
+                </div>
+                <!-- end col -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('readConfigBtn').addEventListener('click', function () {
+            fetch('../Starterkit/partials/read_config.php')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Gagal membaca file.');
+        }
+        return response.text();
+    })
+    .then(data => {
+        const fileContent = document.getElementById('fileContent');
+        fileContent.textContent = data;
+        fileContent.style.display = 'block';
+    })
+    .catch(error => {
+        alert(error.message);
+    });
+        });
+    </script>
+</body>
+
+</html>
