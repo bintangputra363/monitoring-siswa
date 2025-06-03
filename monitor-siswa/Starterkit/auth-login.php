@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if (mysqli_stmt_fetch($stmt)) {
                         if (password_verify($password, $hashed_password)) {
                             // Password is correct, so start a new session
-                            session_start();
+                            // session_start();
 
                             // Store data in session variables
                             $_SESSION["loggedin"] = true;
@@ -69,6 +69,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $_SESSION["useremail"] = $useremail;
                             $_SESSION["username"] = $username;
                             $_SESSION["role"] = $role;
+                            // Jika role adalah guru, ambil kelas yang dia pegang
+                            if ($role == 1) {
+                                $sql_kelas = "SELECT kelas_id FROM mapping_guru_kelas WHERE guru_id = ?";
+                                if ($stmt_kelas = mysqli_prepare($link, $sql_kelas)) {
+                                    mysqli_stmt_bind_param($stmt_kelas, "i", $id);
+                                    mysqli_stmt_execute($stmt_kelas);
+                                    $result_kelas = mysqli_stmt_get_result($stmt_kelas);
+
+                                    $kelas_ids = [];
+                                    while ($row = mysqli_fetch_assoc($result_kelas)) {
+                                        $kelas_ids[] = $row['kelas_id'];
+                                    }
+                                    $_SESSION["kelas_ids"] = $kelas_ids; // simpan sebagai array
+                                    mysqli_stmt_close($stmt_kelas);
+                                }
+                            }
 
                             // Redirect user based on role
                             if ($role == 2) {

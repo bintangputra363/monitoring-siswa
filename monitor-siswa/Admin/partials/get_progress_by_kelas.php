@@ -1,10 +1,24 @@
 <?php
 require_once '../../Starterkit/partials/config.php';
+session_start();
+
+// Cek apakah user login dan role-nya guru
+if (!isset($_SESSION['id']) || $_SESSION['role'] != 1 || !isset($_SESSION['kelas_ids'])) {
+    echo json_encode(['error' => 'Akses ditolak.']);
+    exit;
+}
 
 if (isset($_GET['kelas_id'])) {
     $kelas_id = intval($_GET['kelas_id']);
     $tanggal = isset($_GET['tanggal']) ? $_GET['tanggal'] : date('Y-m-d');
 
+    // Cek apakah kelas ini dimiliki oleh guru
+    if (!in_array($kelas_id, $_SESSION['kelas_ids'])) {
+        echo json_encode(['error' => 'Kelas ini bukan milik Anda.']);
+        exit;
+    }
+
+    // SQL untuk ambil data siswa dan progres
     $sql = "
         SELECT 
             s.id AS siswa_id,

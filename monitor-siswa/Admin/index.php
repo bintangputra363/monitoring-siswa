@@ -52,6 +52,12 @@
                     <div class="col-12">
                         <div class="d-flex flex-wrap gap-2">
                             <?php
+                            $kelas_filter = '';
+                            if ($_SESSION['role'] == 1 && !empty($_SESSION['kelas_ids'])) {
+                                $kelas_in = implode(",", array_map('intval', $_SESSION['kelas_ids']));
+                                $kelas_filter = " WHERE k.id IN ($kelas_in) ";
+                            }
+
                             $kelas_sql = "
                                 SELECT 
                                     k.id AS kelas_id,
@@ -63,6 +69,7 @@
                                     mapping_guru_kelas mgk ON k.id = mgk.kelas_id
                                 LEFT JOIN 
                                     users u ON mgk.guru_id = u.id
+                                $kelas_filter
                                 GROUP BY 
                                     k.id
                                 ORDER BY 
@@ -72,7 +79,6 @@
                             if (!$kelas_result) {
                                 die('QUERY ERROR: ' . mysqli_error($link));
                             }
-
 
                             while ($kelas_row = mysqli_fetch_assoc($kelas_result)) {
                                 echo "<div class='text-center'>";
@@ -233,5 +239,4 @@
     });
 </script>
 </body>
-
 </html>
