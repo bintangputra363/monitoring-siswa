@@ -11,7 +11,10 @@ if (isset($_GET['siswa_id'])) {
             k.jam_mulai,
             k.jam_selesai,
             ck.waktu_checkpoint,
-            ck.status
+            ck.status,
+            ck.status_verifikasi,
+            ck.alasan_tolak,
+            ck.id AS checkpoint_id
         FROM 
             mapping_siswa_kegiatan msk
         JOIN 
@@ -31,9 +34,24 @@ if (isset($_GET['siswa_id'])) {
     if ($result) {
         $data = [];
         while ($row = mysqli_fetch_assoc($result)) {
-            // Tampilkan status jika ada, jika tidak berarti belum checkpoint sama sekali
+            // Cek sudah checkpoint (jika waktu_checkpoint ada isinya dan bukan NULL/kosong)
+            $sudah_checkpoint = !empty($row['waktu_checkpoint']);
+
             $row['waktu_checkpoint'] = $row['waktu_checkpoint'] ?? '-';
-            $row['status'] = $row['status'] ?? 'Belum Checkpoint';
+
+            if (!$sudah_checkpoint) {
+                $row['status'] = 'Belum Checkpoint';
+                $row['status_verifikasi'] = '-';
+                $row['alasan_tolak'] = '';
+                $row['checkpoint_id'] = '';
+            } else {
+                $row['status'] = $row['status'] ?? '-';
+                if ($row['status_verifikasi'] === null) {
+                    $row['status_verifikasi'] = 'pending';
+                }
+                $row['alasan_tolak'] = $row['alasan_tolak'] ?? '';
+                $row['checkpoint_id'] = $row['checkpoint_id'] ?? '';
+            }
             $data[] = $row;
         }
         echo json_encode($data);

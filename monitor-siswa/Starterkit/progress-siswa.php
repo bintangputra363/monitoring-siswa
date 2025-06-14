@@ -3,7 +3,6 @@ include 'partials/session.php';
 include 'partials/main.php';
 require_once 'partials/config.php';
 
-
 $user_id = $_SESSION['id'];
 
 // Ambil siswa_id berdasarkan user_id
@@ -22,12 +21,13 @@ if ($stmt = mysqli_prepare($link, $query)) {
     mysqli_stmt_close($stmt);
 }
 
-// Ambil checkpoint kegiatan tepat waktu hari ini
+// Ambil checkpoint kegiatan tepat waktu hari ini **yang sudah disetujui guru**
 $tanggal = date('Y-m-d');
 $sql = "SELECT COUNT(*) AS tepat_waktu 
         FROM checkpoint_kegiatan 
         WHERE siswa_id = ? 
         AND status = 'Tepat Waktu' 
+        AND status_verifikasi = 'disetujui'
         AND DATE(waktu_checkpoint) = ?";
 $stmt = mysqli_prepare($link, $sql);
 mysqli_stmt_bind_param($stmt, "is", $siswa_id, $tanggal);

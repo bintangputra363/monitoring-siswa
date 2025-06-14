@@ -1,390 +1,610 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Clivax Premium Multipurpose Admin & Dashboard Template documentation of HTML" name="description" />
-    <meta name="keywords" content="Clivax admin documentation, Clivax Laravel documentation, Clivax HTML documentation">
-    <meta content="codebucks" name="author" />
-    <title>Monitor Siswa</title>
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="images/logoSMP.webpg">
-    <!-- Bootstrap Css -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- Custom Css-->
-    <link rel="stylesheet" href="css/style.css">
+    <meta charset="utf-8" />
+    <title>Dokumentasi - Aplikasi Monitoring Siswa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dokumentasi lengkap untuk Aplikasi Monitoring Siswa" />
+    <meta name="author" content="Bintang Putra" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <style>
+        body {
+            position: relative;
+            background-color: #f8f9fa;
+        }
+
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 280px;
+            padding-top: 1.5rem;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        #sidebar .nav-link {
+            color: #555;
+            font-weight: 500;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease-in-out;
+        }
+
+        #sidebar .nav-link i {
+            width: 25px;
+            margin-right: 10px;
+            text-align: center;
+            color: #0d6efd;
+        }
+
+        #sidebar .nav-link.active,
+        #sidebar .nav-link:hover {
+            color: #0d6efd;
+            background-color: #e9f2ff;
+            border-right: 3px solid #0d6efd;
+        }
+
+        main {
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        section {
+            padding-top: 70px;
+            margin-top: -50px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+        }
+
+        h2 i,
+        h1 i {
+            margin-right: 10px;
+        }
+
+        .folder-structure ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .folder-structure li {
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #5865f2;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+
+        /* --- STYLE BLOK KODE TEMA GELAP (OKAIDIA) --- */
+        code[class*="language-"],
+        pre[class*="language-"] {
+            color: #f8f8f2;
+            background: none;
+            text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 1em;
+            text-align: left;
+            white-space: pre;
+            word-spacing: normal;
+            word-break: normal;
+            word-wrap: normal;
+            line-height: 1.5;
+            -moz-tab-size: 4;
+            -o-tab-size: 4;
+            tab-size: 4;
+            -webkit-hyphens: none;
+            -moz-hyphens: none;
+            -ms-hyphens: none;
+            hyphens: none;
+        }
+
+        pre[class*="language-"] {
+            padding: 1em;
+            margin: .5em 0;
+            overflow: auto;
+            border-radius: 0.5rem;
+        }
+
+        :not(pre)>code[class*="language-"],
+        pre[class*="language-"] {
+            background: #272822;
+            /* Latar Belakang Hitam/Gelap */
+        }
+
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: slategray;
+        }
+
+        .token.punctuation {
+            color: #f8f8f2;
+        }
+
+        .token.namespace {
+            opacity: .7;
+        }
+
+        .token.property,
+        .token.tag,
+        .token.constant,
+        .token.symbol,
+        .token.deleted {
+            color: #f92672;
+        }
+
+        .token.boolean,
+        .token.number {
+            color: #ae81ff;
+        }
+
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin,
+        .token.inserted {
+            color: #a6e22e;
+        }
+
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .language-css .token.string,
+        .style .token.string,
+        .token.variable {
+            color: #f8f8f2;
+        }
+
+        .token.atrule,
+        .token.attr-value,
+        .token.function,
+        .token.class-name {
+            color: #e6db74;
+        }
+
+        .token.keyword {
+            color: #66d9ef;
+        }
+
+        .token.regex,
+        .token.important {
+            color: #fd971f;
+        }
+
+        .token.important,
+        .token.bold {
+            font-weight: bold;
+        }
+
+        .token.italic {
+            font-style: italic;
+        }
+
+        .token.entity {
+            cursor: help;
+        }
+
+        /* --- AKHIR STYLE BLOK KODE --- */
+    </style>
 </head>
 
-<body>
-
-    <!-- navbar -->
-    <nav class="navbar navbar-expand-md py-3 fixed-top">
-        <div class="container">
-           <a class="navbar-brand" href="#">
-    <span class="logo-text" style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: bold; color: #4CAF50;">
-        Monitor Siswa
-    </span>
-</a>
-            
-            <span class="badge bg-danger">v1.1.0</span>
+<body data-bs-spy="scroll" data-bs-target="#sidebar" data-bs-offset="100">
+    <nav id="sidebar" class="d-none d-md-block">
+        <div class="position-sticky h-100">
+            <div class="text-center py-3">
+                <h4 class="text-primary fw-bold">
+                    <i class="fas fa-book-open"></i> Dokumentasi
+                </h4>
+                <p class="text-muted small mb-0">Aplikasi Monitoring Siswa</p>
+            </div>
+            <hr class="mx-3 my-2" />
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#pendahuluan"><i class="fas fa-rocket"></i> Pendahuluan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#instalasi"><i class="fas fa-download"></i> Panduan Instalasi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#struktur-folder"><i class="fas fa-folder-tree"></i> Struktur Folder</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#bedah-kode"><i class="fas fa-code"></i> Bedah Kode</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#database"><i class="fas fa-database"></i> Skema Database</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#alur-kerja"><i class="fas fa-project-diagram"></i> Alur Kerja</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#halaman-pengguna"><i class="fas fa-users"></i> Detail Halaman</a>
+                </li>
+            </ul>
         </div>
     </nav>
 
-    <div class="page-wrapper">
-        <div class="container">
-            <div class="row justify-content-center g-3">
-                <div class="col-md-3 d-none d-md-block">
-                    <div class="card bg-white sidebar-menu shadow border-0 min-vh-100">
-                        <div class="card-body p-4">
-                            <nav id="navbar-example2" class="h-100 flex-column align-items-stretch">
-                                <nav class="nav nav-pills flex-column">
-                                    <a class="nav-link" href="#introduction">
-                                        <i class="mdi mdi-text-box-outline"></i>
-                                        <span>Introduction</span>
-                                    </a>
-                                    <a class="nav-link" href="#setup">
-                                        <i class="mdi mdi-cog-outline"></i>
-                                        <span>Setup</span>
-                                    </a>
-                                    <a class="nav-link" href="#usage">
-                                        <i class="mdi mdi-help-circle-outline"></i>
-                                        <span>Panduan Penggunaan</span>
-                                    </a>
-                                    <a class="nav-link" href="#read-file">
-                                        <i class="mdi mdi-file-outline"></i>
-                                        <span>Baca File</span>
-                                    </a>
-                                    <a class="nav-link" href="#change-log">
-                                        <i class="mdi mdi-format-list-bulleted"></i>
-                                        <span>Changelog</span>
-                                    </a>
-                                </nav>
-                            </nav>
-                        </div>
-                        <!-- end card-body -->
-                    </div>
-                    <!-- end card -->
+    <main>
+        <section id="pendahuluan">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h1 class="text-primary mb-3"><i class="fas fa-rocket"></i>Aplikasi Monitoring Siswa</h1>
+                    <p class="lead text-muted">
+                        Sebuah sistem informasi berbasis web yang berfungsi sebagai asisten digital untuk memantau
+                        kegiatan dan progres siswa.
+                    </p>
+                    <hr />
+                    <p>
+                        Aplikasi ini dirancang untuk menggantikan proses manual dalam memantau kegiatan harian siswa
+                        (seperti sholat, literasi, dll.) menjadi sebuah sistem digital yang terpusat, efisien, dan dapat
+                        diakses secara real-time.
+                    </p>
                 </div>
-                <!-- end col -->
-                <div class="col-md-9">
-                    <div class="card bg-white shadow border-0" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -69px" data-bs-smooth-scroll="true">
-                        <div class="card-body p-4">
-                            <div id="introduction" class="mb-4">
-                                <h5 class="fw-bold mb-4">Introduction</h5>
-                                <p class="alert alert-success border-0">
-                                    Selamat datang di <strong>Monitor Siswa</strong>, aplikasi manajemen siswa berbasis web.
-                                </p>
-                                <p>
-                                    <strong>Monitor Siswa</strong> adalah aplikasi yang dirancang untuk membantu sekolah dalam mengelola data siswa, guru, kelas, dan kegiatan. Aplikasi ini dibangun menggunakan <strong>PHP 8.2</strong> dan <strong>Bootstrap v5.3.3</strong>, dengan antarmuka yang responsif dan mendukung berbagai perangkat.
-                                </p>
-                                <p>
-                                    Fitur utama aplikasi ini meliputi:
-                                </p>
-                                <ul>
-                                    <li><strong>Manajemen Guru:</strong> Tambahkan dan kelola data guru dengan mudah.</li>
-                                    <li><strong>Manajemen Siswa:</strong> Tambahkan dan kelola data siswa secara efisien.</li>
-                                    <li><strong>Mapping Guru ke Kelas:</strong> Hubungkan guru dengan kelas yang mereka ajar.</li>
-                                    <li><strong>Mapping Siswa ke Kegiatan:</strong> Hubungkan siswa dengan kegiatan tertentu.</li>
-                                    <li><strong>Monitoring:</strong> Pantau progress siswa dalam berbagai kegiatan.</li>
-                                </ul>
-                                <p>
-                                    Aplikasi ini mendukung mode terang dan gelap, serta dapat disesuaikan dengan kebutuhan sekolah Anda.
-                                </p>
-                                <h5 class="fw-bold mb-4">📁 Struktur Folder & File</h5>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <pre class="mb-0">
-    ├── Admin
-    |    ├── assets
-    |    |    ├── css
-    |    |    ├── fonts
-    |    |    ├── images
-    |    |    ├── js
-    |    |    ├── libs
-    |    |    └── scss
-    |    ├── partials
-    |    ├── pages
-    |    └── index.php
-    ├── Documentation
-    ├── StarterKit
-    |    ├── assets
-    |    |    ├── css
-    |    |    ├── fonts
-    |    |    ├── images
-    |    |    ├── js
-    |    |    ├── libs
-    |    |    └── scss
-    |    ├── partials
-    |    |    ├── config.php
-    |    |    ├── session.php
-    |    ├── pages
-    |    └── auth-login.php
-    └── monitor_siswa.sql
-                </pre>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-3" id="setup">
-                                <h5 class="fw-bold mb-4">Setup HTML</h5>
-                                <div class="mb-4">
-                                    <h6 class="mt-4 fw-semibold">Description</h6>
-                                    <p>
-                                        <strong>Clivax PHP</strong> is a fully featured premium admin dashboard template built with <strong>Bootstrap v5.3.3</strong> and <strong>PHP v8.2</strong>.
-                                        Please follow below steps to install and setup all
-                                        prerequisites:
-                                    </p>
-                                </div>
-
-                                <div class="mb-4">
-                                    <h6 class="mt-4 fw-semibold">Prerequisites</h6>
-
-                                    <p>
-                                        Please follow below steps to install and setup all
-                                        prerequisites:
-                                    </p>
-
-                                    <ul>
-                                        <li>
-                                            <strong>PHP 8.2</strong>
-                                            <p>
-                                                Make sure to have the <a href="https://www.php.net/" target="_blank">PHP-8.2 </a>or latest version installed &amp; running on your computer.
-                                                If you already have installed PHP on your computer, 
-                                                you can skip this step.
-                                            </p>
-                                        </li>
-
-                                        <li>
-                                            <strong>Xampp</strong>
-                                            <p>
-                                                Make sure to have the the latest version of <a href="https://www.apachefriends.org/" target="_blank">xampp</a> installed &amp; running in your computer.
-                                                If you already have installed Xampp on your computer, you can skip this step.
-                                            </p>
-                                        </li>
-                                        
-                                    </ul>
-                                </div>
-
-                                <div>
-                                    <h6 class="mt-4 fw-semibold">Installation</h6>
-
-                                    <p>
-                                        To setup the admin theme, follow below-mentioned steps:
-                                    </p>
-
-                                    <ul>
-                                        <li>
-                                            <strong>Install Prerequisites</strong>
-                                            <p>
-                                                Make sure to have all above prerequisites installed
-                                                &amp; running on your computer
-                                            </p>
-                                        </li>
-                                    </ul>
-
-
-                                    <p class="mt-4">
-                                        
-                                        After you finished with the above steps, you can run the following commands into the terminal/command prompt 
-                                        from the root directory ( clivax_v*/PHP/ ) of the project to run the project locally or build for production use:
-                                    
-                                    </p>
-                                    <table class="table table-bordered m-0">
-                                        <thead>
-                                            <tr>
-                                                
-                                                <th>Description</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                                    
-                                                <td>
-                                                    Set extract zip to in the file location in <code>c:/xammp/htdos/filename</code>.
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                
-                                                <td>
-                                                    Create a new database with name <code>monitor_siswa,</code> 
-                                                Then import the <code>monitor_siswa.sql</code> file in your database.
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                
-                                                <td>
-                                                    Configure the Database credentials in the config.php file.
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                
-                                                <td>
-                                                    You can test locally with signup as a new user to check all the pages.
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div>
-                                    <h6 class="mt-4 fw-bold">Tips</h6>
-                                    <div class="alert alert-warning">
-                                        SCSS: We suggest you to do not change any scss files from the assets/scss/custom folders because to get new updates will might be break your SCSS changes if any you have made. We strongly suggest you
-                                        to create new custom.scss file and use that instead of overwrite
-                                        any theme's custom scss files.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-4" id="usage">
-                                <h5 class="fw-bold mb-4">Panduan Penggunaan Aplikasi</h5>
-                                <p>
-                                    Setelah selesai melakukan setup, berikut adalah langkah-langkah untuk menggunakan aplikasi:
-                                </p>
-                                <ol>
-                                    <li>
-                                        <strong>Login:</strong> Masuk ke aplikasi menggunakan akun admin yang telah dibuat.
-                                    </li>
-                                    <li>
-                                        <strong>Tambah Guru:</strong> Gunakan menu <code>Register Guru</code> di bagian atas untuk menambahkan guru baru.
-                                    </li>
-                                    <li>
-                                        <strong>Tambah Siswa:</strong> Gunakan menu <code>Tambah Siswa</code> untuk menambahkan data siswa.
-                                    </li>
-                                    <li>
-                                        <strong>Mapping Guru ke Kelas:</strong> Gunakan fitur <code>Mapping Guru</code> untuk menghubungkan guru dengan kelas tertentu.
-                                    </li>
-                                    <li>
-                                        <strong>Mapping Siswa ke Kegiatan:</strong> Gunakan fitur <code>Mapping Siswa</code> untuk menghubungkan siswa dengan kegiatan tertentu.
-                                    </li>
-                                    <li>
-                                        <strong>Monitoring:</strong> Gunakan halaman <code>Dashboard</code> untuk memantau progress siswa dan kegiatan.
-                                    </li>
-                                </ol>
-                            </div>
-                            <div class="mt-4" id="read-file">
-                                <h5 class="fw-bold mb-4">Baca File Konfigurasi</h5>
-                                <p>
-                                    Anda dapat membaca file konfigurasi aplikasi langsung dari dokumentasi ini. Klik tombol di bawah untuk melihat isi file <code>config.php</code>.
-                                </p>
-                                <button class="btn btn-primary" id="readConfigBtn">Baca File Config</button>
-                                <pre id="fileContent" class="mt-3 p-3 bg-light border rounded" style="display: none;"></pre>
-                            </div>
-                            <div class="mt-4" id="starterkit-intro">
-                                <h5 class="fw-bold mb-4">Menjalankan Aplikasi dari Folder Starterkit</h5>
-                                <p>
-                                    Untuk menjalankan aplikasi ini, pastikan Anda mengikuti langkah-langkah berikut:
-                                </p>
-                                <ol>
-                                    <li>
-                                        Pastikan Anda telah menginstal <strong>XAMPP</strong> atau server lokal lainnya di komputer Anda.
-                                    </li>
-                                    <li>
-                                        Ekstrak file aplikasi ke dalam folder <code>htdocs</code> di direktori instalasi XAMPP Anda. Contoh:
-                                        <pre class="bg-light p-3 border rounded">C:/xampp/htdocs/monitor-siswa/Starterkit</pre>
-                                    </li>
-                                    <li>
-                                        Buka file <code>config.php</code> di folder <code>Starterkit/partials</code> dan sesuaikan kredensial database Anda:
-                                        <pre class="bg-light p-3 border rounded">
-define('DB_SERVER', 'localhost');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'monitor_siswa');
-                                        </pre>
-                                    </li>
-                                    <li>
-                                        Jalankan XAMPP dan aktifkan modul <strong>Apache</strong> dan <strong>MySQL</strong>.
-                                    </li>
-                                    <li>
-                                        Buka browser Anda dan akses aplikasi melalui URL berikut:
-                                        <pre class="bg-light p-3 border rounded">http://localhost/monitor-siswa/Starterkit/auth-login.php</pre>
-                                    </li>
-                                    <li>
-                                        Login menggunakan akun admin yang telah dibuat, atau buat akun baru jika diperlukan.
-                                    </li>
-                                </ol>
-                                <p>
-                                    Setelah langkah-langkah di atas selesai, Anda dapat mulai menggunakan aplikasi untuk mengelola data siswa, guru, kelas, dan kegiatan.
-                                </p>
-                            </div>
-                            <div class="mt-4" id="change-log">
-                                <h5 class="fw-bold mb-4">Changelog</h5>
-                                <div>
-                                    <div id="v-1-2" class="mb-4">
-                                        <h6 class="mb-3">
-                                            <span class="text-primary">v1.1.0</span>
-                                            <small class="text-muted"> - 22 January 2025 </small>
-                                        </h6>
-                                        <ul>
-                                            <li>
-                                                Updated Bootstrap version 5.3.3.
-                                            </li>
-                                            <li>
-                                                Update packages.
-                                            </li>
-                                            <li>
-                                                Fixed minor issues.
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div id="v-1-0" class="mb-4">
-                                        <h6 class="mb-3">
-                                            <span class="text-primary">v1.0.0</span>
-                                            <small class="text-muted"> - 30 November 2023 </small>
-                                        </h6>
-                                        <ul>
-                                            <li>
-                                                Initial released
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end card-body -->
-                    </div>
-                    <!-- end card -->
-
-                    <!-- start footer -->
-                    <footer class="footer py-3">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="text-center text-md-start">
-                                        <script>document.write(new Date().getFullYear())</script> © SMP NEGRI 4 KOTA TANGERANG.
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="text-md-end text-center">
-                                        Crafted with <i class="mdi mdi-heart text-danger"></i> by <a href="index.html" target="_blank" class="text-muted">Elham Hacker</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </footer>
-                    <!-- end footer -->
-                </div>
-                <!-- end col -->
             </div>
-        </div>
-    </div>
+        </section>
 
-    <script src="js/bootstrap.bundle.min.js"></script>
+        <section id="instalasi">
+            <h2 class="text-dark mb-4"><i class="fas fa-download text-primary"></i>Panduan Instalasi</h2>
+            <div class="card">
+                <div class="card-body p-4">
+                    <p>Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal:</p>
+                    <ol class="list-group list-group-numbered">
+                        <li class="list-group-item"><strong>Siapkan Server Lokal</strong>: Unduh dan install <a
+                                href="https://www.apachefriends.org/index.html" target="_blank">XAMPP</a>. Jalankan
+                            modul <strong>Apache</strong> dan <strong>MySQL</strong> dari XAMPP Control Panel.</li>
+                        <li class="list-group-item"><strong>Pindahkan Folder Proyek</strong>: Salin folder proyek Anda
+                            (`monitoring-siswa`) ke dalam direktori `htdocs` milik XAMPP (biasanya di
+                            <code>C:\xampp\htdocs\</code>).</li>
+                        <li class="list-group-item"><strong>Buat & Impor Database</strong>: Buka browser dan akses
+                            <code>http://localhost/phpmyadmin</code>. Buat database baru bernama
+                            <code>monitor_siswa</code>, lalu pilih database tersebut, klik tab "Import", dan pilih file
+                            <code>monitor_siswa (1).sql</code>.</li>
+                        <li class="list-group-item">
+                            <strong>Akses Aplikasi</strong>:
+                            <ul>
+                                <li>Login Admin/Guru: <code>http://localhost/monitoring-siswa/Admin/</code></li>
+                                <li>Login Siswa:
+                                    <code>http://localhost/monitoring-siswa/Starterkit/auth-login.php</code></li>
+                            </ul>
+                        </li>
+                        <li class="list-group-item list-group-item-info">
+                            <b><i class="fas fa-key"></i> Akun default Admin:</b> Username: <code>admin</code>,
+                            Password: <code>admin</code>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section id="struktur-folder">
+            <h2 class="text-dark mb-4"><i class="fas fa-folder-tree text-primary"></i>Struktur Folder</h2>
+            <div class="card">
+                <div class="card-body p-4">
+                    <p>Proyek ini diorganisir ke dalam beberapa direktori utama untuk menjaga kerapian kode:</p>
+                    <div class="folder-structure">
+                        <ul>
+                            <li><i class="fas fa-folder-open text-primary"></i> <strong>/Admin</strong>: Berisi semua
+                                file untuk halaman Admin & Guru.</li>
+                            <li><i class="fas fa-folder-open text-primary"></i> <strong>/Starterkit</strong>: Berisi
+                                semua file untuk halaman Siswa.</li>
+                            <li><i class="fas fa-folder text-secondary"></i> <strong>/partials</strong>: (Ada di dalam
+                                Admin & Starterkit) Berisi file kode yang dipakai berulang, seperti koneksi database
+                                (`config.php`), header, dan footer.</li>
+                            <li><i class="fas fa-folder text-secondary"></i> <strong>/assets</strong>: Berisi file
+                                pendukung seperti gambar, file CSS (untuk styling), dan JavaScript (untuk
+                                interaktivitas).</li>
+                            <li><i class="fas fa-file-alt text-success"></i> <strong>monitor_siswa (1).sql</strong>:
+                                "Cetak biru" atau struktur dari database yang akan kita gunakan.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bedah-kode">
+            <h2 class="text-dark mb-4"><i class="fas fa-code text-primary"></i>Bedah Kode: Penjelasan File Penting</h2>
+            <div class="card">
+                <div class="card-body p-4">
+                    <p>Mari kita lihat cara kerja beberapa file kunci dalam aplikasi Anda untuk memahami alur logikanya.
+                    </p>
+
+                    <h5 class="fw-bold mt-4"><i class="fas fa-cogs text-muted me-2"></i>File Koneksi Database:
+                        <code>Admin/partials/config.php</code></h5>
+                    <p class="text-muted small">File ini adalah jantung aplikasi. Fungsinya adalah untuk membuat
+                        jembatan penghubung antara kode PHP dengan database MySQL.</p>
+                    <div class="code-block">
+                        <button class="copy-btn">Salin</button>
+                        <pre><code class="language-php">
+&lt;?php
+// Variabel untuk menyimpan detail koneksi
+$db_host = "localhost"; // Alamat server database
+$db_user = "root";      // Username database
+$db_pass = "";          // Password database
+$db_name = "monitor_siswa"; // Nama database
+
+// Membuat koneksi ke database menggunakan detail di atas
+$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+// Mengecek apakah koneksi berhasil atau gagal
+if ($conn-&gt;connect_error) {
+    die("Koneksi gagal: " . $conn-&gt;connect_error);
+}
+?&gt;
+							</code></pre>
+                    </div>
+
+                    <h5 class="fw-bold mt-5"><i class="fas fa-plus-circle text-muted me-2"></i>Logika Menambah Siswa:
+                        <code>Admin/partials/add_siswa.php</code></h5>
+                    <p class="text-muted small">Saat admin mengisi formulir tambah siswa dan menekan 'Simpan', data
+                        tersebut akan diterima dan diproses oleh file ini untuk dimasukkan ke dalam database.</p>
+                    <div class="code-block" style="background-color: #272822;">
+                        <button class="copy-btn">Salin</button>
+                        <pre><code class="language-php">
+    &lt;?php
+    // Memasukkan file koneksi agar bisa terhubung ke database
+    require_once 'config.php'; 
+
+    // Mengambil data yang dikirim dari formulir (method POST)
+    $nama = $_POST['nama'];
+    $nis = $_POST['nis'];
+    $kelas_id = $_POST['kelas_id'];
+
+    // Perintah SQL untuk memasukkan (INSERT) data baru ke tabel `siswa`
+    $sql_siswa = "INSERT INTO siswa (nama, nis, kelas_id) VALUES ('$nama', '$nis', '$kelas_id')";
+
+    // Menjalankan perintah SQL ke database
+    if ($conn-&gt;query($sql_siswa) === TRUE) {
+        // Jika berhasil, juga masukkan data loginnya ke tabel `users`
+        // (di sini ada logika lanjutan untuk INSERT ke tabel users)
+        header("location: ../daftar_siswa.php");
+    } else {
+        // Jika gagal, tampilkan pesan error
+        echo "Error: " . $sql_siswa . "&lt;br&gt;" . $conn-&gt;error;
+    }
+    ?&gt;
+							</code></pre>
+                    </div>
+
+                    <h5 class="fw-bold mt-5"><i class="fas fa-check-circle text-muted me-2"></i>Logika Checkpoint Siswa:
+                        <code>Starterkit/partials/checkpoint.php</code></h5>
+                    <p class="text-muted small">Ketika siswa menekan tombol "Checkpoint", file inilah yang bekerja di
+                        belakang layar untuk mencatat waktu ke database.</p>
+                    <div class="code-block" style="background-color: #272822;">
+                        <button class="copy-btn">Salin</button>
+                        <pre><code class="language-php">
+    &lt;?php
+    // Memulai session untuk mendapatkan ID siswa yang sedang login
+    session_start();
+    require_once 'config.php';
+
+    // Mengambil ID siswa (dari session) & ID kegiatan (dari tombol yang diklik)
+    $siswa_id = $_SESSION['siswa_id'];
+    $kegiatan_id = $_POST['kegiatan_id'];
+
+    // Mengatur zona waktu dan mengambil waktu saat ini
+    date_default_timezone_set('Asia/Jakarta');
+    $waktu_checkpoint = date('Y-m-d H:i:s');
+
+    // Perintah SQL untuk mencatat checkpoint ke dalam tabel `checkpoint_kegiatan`
+    $sql = "INSERT INTO checkpoint_kegiatan (siswa_id, kegiatan_id, waktu_checkpoint, status) 
+            VALUES ('$siswa_id', '$kegiatan_id', '$waktu_checkpoint', 'Tepat Waktu')";
+
+    // Menjalankan perintah SQL dan memberikan respon
+    if ($conn-&gt;query($sql) === TRUE) {
+        echo "Checkpoint berhasil!";
+    } else {
+        echo "Error: " . $conn-&gt;error;
+    }
+    ?&gt;
+							</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="database">
+            <h2 class="text-dark mb-4"><i class="fas fa-database text-primary"></i>Skema Database</h2>
+            <div class="card">
+                <div class="card-body p-4">
+                    <p>Berikut rincian setiap tabel dalam database <code>monitor_siswa</code>:</p>
+                    <div class="accordion" id="dbAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#c1">Tabel `users`</button></h2>
+                            <div id="c1" class="accordion-collapse collapse" data-bs-parent="#dbAccordion">
+                                <div class="accordion-body">Menyimpan data login (username, password, role) untuk semua
+                                    pengguna.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#c2">Tabel `siswa`</button></h2>
+                            <div id="c2" class="accordion-collapse collapse" data-bs-parent="#dbAccordion">
+                                <div class="accordion-body">Menyimpan data detail profil siswa seperti nama dan NIS.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#c3">Tabel `guru`</button></h2>
+                            <div id="c3" class="accordion-collapse collapse" data-bs-parent="#dbAccordion">
+                                <div class="accordion-body">Menyimpan data detail profil guru.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#c4">Tabel `kelas`</button></h2>
+                            <div id="c4" class="accordion-collapse collapse" data-bs-parent="#dbAccordion">
+                                <div class="accordion-body">Menyimpan daftar nama kelas yang ada.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#c5">Tabel `kegiatan`</button></h2>
+                            <div id="c5" class="accordion-collapse collapse" data-bs-parent="#dbAccordion">
+                                <div class="accordion-body">Menyimpan daftar semua kegiatan yang akan dimonitor.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#c6">Tabel `mapping_...`</button></h2>
+                            <div id="c6" class="accordion-collapse collapse" data-bs-parent="#dbAccordion">
+                                <div class="accordion-body">Tabel penting yang menghubungkan data. Contoh:
+                                    `mapping_siswa_kegiatan` menghubungkan siswa dengan kegiatan yang harus diikutinya.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#c7">Tabel `checkpoint_kegiatan`</button>
+                            </h2>
+                            <div id="c7" class="accordion-collapse collapse" data-bs-parent="#dbAccordion">
+                                <div class="accordion-body">Mencatat setiap kali siswa melakukan 'checkpoint' (laporan
+                                    kehadiran) pada sebuah kegiatan. Ini adalah tabel transaksi utama.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#c8">Tabel `laporan_kegiatan`</button>
+                            </h2>
+                            <div id="c8" class="accordion-collapse collapse" data-bs-parent="#dbAccordion">
+                                <div class="accordion-body">Menyimpan informasi file laporan (jika ada) yang diunggah
+                                    oleh siswa.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="alur-kerja">
+            <h2 class="text-dark mb-4"><i class="fas fa-project-diagram text-primary"></i>Alur Kerja Pengguna</h2>
+            <div class="card">
+                <div class="card-body p-4">
+                    <ol>
+                        <li><strong>Setup Awal oleh Admin</strong>: Admin menyiapkan semua data master: Guru, Siswa,
+                            Kelas, dan Kegiatan.</li>
+                        <li><strong>Pemetaan oleh Admin</strong>: Admin menentukan kelas mana mengikuti kegiatan apa
+                            melalui menu `Mapping Siswa`.</li>
+                        <li><strong>Aktivitas Harian Siswa</strong>: Siswa login dan melakukan `Checkpoint` pada
+                            kegiatan yang sudah ditentukan.</li>
+                        <li><strong>Monitoring oleh Guru/Admin</strong>: Guru dan Admin memantau progres siswa melalui
+                            dashboard dan laporan yang tersedia.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section id="halaman-pengguna">
+            <h2 class="text-dark mb-4"><i class="fas fa-users text-primary"></i>Detail Halaman Pengguna</h2>
+            <div class="row">
+                <div class="col-lg-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white"><i class="fas fa-user-shield"></i> Panel Admin &
+                            Guru</div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>Dashboard:</strong> Grafik dan statistik progres
+                                    seluruh siswa.</li>
+                                <li class="list-group-item"><strong>Daftar Siswa:</strong> Menambah, melihat, mengubah,
+                                    dan menghapus data siswa.</li>
+                                <li class="list-group-item"><strong>List Guru:</strong> Menambah, melihat, mengubah, dan
+                                    menghapus data guru.</li>
+                                <li class="list-group-item"><strong>Kelas & Kegiatan:</strong> Mengelola data master
+                                    kelas dan kegiatan.</li>
+                                <li class="list-group-item"><strong>Mapping Siswa:</strong> Menentukan siswa mana
+                                    mengikuti kegiatan apa.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white"><i class="fas fa-user-graduate"></i> Panel Siswa
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>Dashboard:</strong> Ringkasan progres pribadi.</li>
+                                <li class="list-group-item"><strong>Kegiatan Siswa:</strong> Halaman utama untuk
+                                    melakukan 'checkpoint' harian.</li>
+                                <li class="list-group-item"><strong>Progress Siswa:</strong> Melihat riwayat checkpoint
+                                    yang sudah dilakukan.</li>
+                                <li class="list-group-item"><strong>Laporan Siswa:</strong> Mengunggah file laporan jika
+                                    diperlukan.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="pt-4 my-4 text-muted border-top text-center">
+            &copy; 2025 Bintang Putra
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     <script>
-        document.getElementById('readConfigBtn').addEventListener('click', function () {
-            fetch('../Starterkit/partials/read_config.php')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Gagal membaca file.');
-        }
-        return response.text();
-    })
-    .then(data => {
-        const fileContent = document.getElementById('fileContent');
-        fileContent.textContent = data;
-        fileContent.style.display = 'block';
-    })
-    .catch(error => {
-        alert(error.message);
-    });
+        // Activate scrollspy
+        new bootstrap.ScrollSpy(document.body, {
+            target: '#sidebar'
+        });
+
+        // Logic untuk tombol 'Salin'
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const codeBlock = button.closest('.code-block');
+                const code = codeBlock.querySelector('code').innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.innerText = 'Tersalin!';
+                    setTimeout(() => {
+                        button.innerText = 'Salin';
+                    }, 2000);
+                });
+            });
         });
     </script>
 </body>

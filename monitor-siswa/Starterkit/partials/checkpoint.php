@@ -91,16 +91,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
             // Simpan checkpoint ke database
-            $sql_checkpoint = "INSERT INTO checkpoint_kegiatan (siswa_id, kegiatan_id, waktu_checkpoint, status) VALUES (?, ?, ?, ?)";
-            if ($stmt_checkpoint = mysqli_prepare($link, $sql_checkpoint)) {
-                mysqli_stmt_bind_param($stmt_checkpoint, "isss", $siswa_id, $kegiatan_id, $timestamp, $status);
-                if (mysqli_stmt_execute($stmt_checkpoint)) {
-                    echo json_encode(['success' => true, 'timestamp' => $timestamp, 'status' => $status]);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Gagal mencatat checkpoint.']);
-                }
-                mysqli_stmt_close($stmt_checkpoint);
-            }
+            // Simpan checkpoint ke database
+$sql_checkpoint = "INSERT INTO checkpoint_kegiatan (siswa_id, kegiatan_id, waktu_checkpoint, status, status_verifikasi) VALUES (?, ?, ?, ?, 'pending')";
+if ($stmt_checkpoint = mysqli_prepare($link, $sql_checkpoint)) {
+    mysqli_stmt_bind_param($stmt_checkpoint, "isss", $siswa_id, $kegiatan_id, $timestamp, $status);
+    if (mysqli_stmt_execute($stmt_checkpoint)) {
+        echo json_encode(['success' => true, 'timestamp' => $timestamp, 'status' => $status]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Gagal mencatat checkpoint.']);
+    }
+    mysqli_stmt_close($stmt_checkpoint);
+}
+
         } else {
             echo json_encode(['success' => false, 'message' => 'Siswa tidak ditemukan.']);
         }

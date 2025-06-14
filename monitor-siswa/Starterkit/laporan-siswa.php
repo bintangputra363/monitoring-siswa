@@ -34,7 +34,9 @@ $sql = "
         k.jam_mulai, 
         k.jam_selesai, 
         ck.waktu_checkpoint, 
-        ck.status 
+        ck.status,
+        ck.status_verifikasi,
+        ck.alasan_tolak
     FROM 
         mapping_siswa_kegiatan msk 
     JOIN 
@@ -59,9 +61,7 @@ $result = mysqli_stmt_get_result($stmt);
 <html> 
 <head> 
     <?php includeFileWithVariables('partials/title-meta.php', array('title' => 'Laporan Kegiatan - SMP Negeri 4 Kota Tangerang')); ?>
-    <!-- <title>Laporan Kegiatan</title>  -->
     <?php include 'partials/head-css.php'; ?> 
-    
 </head> 
 <?php include 'partials/body.php'; ?>
 <body> 
@@ -92,7 +92,30 @@ $result = mysqli_stmt_get_result($stmt);
                                 <td><?= htmlspecialchars($row['jam_mulai']) ?></td> 
                                 <td><?= htmlspecialchars($row['jam_selesai']) ?></td> 
                                 <td><?= $row['waktu_checkpoint'] ?? '-' ?></td> 
-                                <td><?= $row['status'] ?? '-' ?></td> 
+                                <td>
+                                    <?php
+                                    if (empty($row['waktu_checkpoint'])) {
+                                        echo '<span class="badge bg-secondary">Belum Checkpoint</span>';
+                                    } else {
+                                        if ($row['status_verifikasi'] === 'pending' || $row['status_verifikasi'] === null) {
+                                            echo '<span class="badge bg-warning text-dark">Menunggu Persetujuan</span>';
+                                        } elseif ($row['status_verifikasi'] === 'disetujui') {
+                                            if ($row['status'] === 'Tepat Waktu') {
+                                                echo '<span class="badge bg-success">Tepat Waktu</span>';
+                                            } else {
+                                                echo '<span class="badge bg-info text-dark">' . htmlspecialchars($row['status']) . '</span>';
+                                            }
+                                        } elseif ($row['status_verifikasi'] === 'ditolak') {
+                                            echo '<span class="badge bg-danger">Ditolak</span>';
+                                            if (!empty($row['alasan_tolak'])) {
+                                                echo '<br><small class="text-danger">Alasan: ' . htmlspecialchars($row['alasan_tolak']) . '</small>';
+                                            }
+                                        } else {
+                                            echo '-';
+                                        }
+                                    }
+                                    ?>
+                                </td>
                             </tr> 
                         <?php endwhile; ?> 
                     </tbody> 
