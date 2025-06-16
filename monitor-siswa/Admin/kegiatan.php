@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
-                            <h4 class="fs-16 fw-semibold mb-1">Master Kegiatan Siswa</h4>
+                            <h4 class="fs-16 fw-semibold mb-1">Kegiatan Siswa</h4>
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addKegiatanModal">Tambah Kegiatan</button>
                         </div>
                     </div>

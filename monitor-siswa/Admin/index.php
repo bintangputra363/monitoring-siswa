@@ -1,16 +1,50 @@
-<?php include 'partials/session.php'; ?>
-<?php include 'partials/main.php'; ?>
-<?php require_once '../Starterkit/partials/config.php'; ?>
-<?php require_once 'partials/get_progress.php'; ?>
+<?php
+include 'partials/session.php';
+include 'partials/main.php';
+require_once '../Starterkit/partials/config.php';
+require_once 'partials/get_progress.php';
+
+// Pastikan user login
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header('location: ../Starterkit/auth-login.php');
+    exit;
+}
+
+// Cek role user untuk greeting dan akses fitur (boleh dimodifikasi sesuai kebutuhan)
+$role_id = $_SESSION['role']; // id sesuai tabel roles
+$nama_role = '';
+switch ($role_id) {
+    case 1: $nama_role = 'Guru'; break;
+    case 2: $nama_role = 'Siswa'; break;
+    case 3: $nama_role = 'Admin'; break;
+    case 4: $nama_role = 'Kepala Sekolah'; break;
+    default: $nama_role = 'User'; break;
+}
+?>
 
 <head>
     <?php includeFileWithVariables('partials/title-meta.php', array('title' => 'Dashboard')); ?>
     <?php include 'partials/head-css.php'; ?>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         .filter-kelas.active {
             background-color: #4CAF50;
             color: #fff;
             border-color: #4CAF50;
+        }
+        @media (max-width: 575.98px) {
+            .card-header .btn-group,
+            .card-header .form-control-sm {
+                width: 100% !important;
+                margin-bottom: 0.5rem;
+            }
+            .card-header .btn-group .btn {
+                width: 50%;
+            }
+            .card-header .d-flex.flex-wrap.align-items-center.gap-2 {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
         }
     </style>
 </head>
@@ -41,7 +75,7 @@
                         }
 
                         $nama_user = strtoupper($_SESSION['username']);
-                        echo "<h4 class='fw-bold'>$waktu, <span class='text-success'>$nama_user!</span></h4>";
+                        echo "<h4 class='fw-bold'>$waktu, <span class='text-success'>$nama_user</span> <span class='badge bg-info ms-2'>$nama_role</span>!</h4>";
                         echo "<p>Berikut adalah daftar monitoring siswa Anda hari ini.</p>";
                         ?>
                     </div>
@@ -53,7 +87,8 @@
                         <div class="d-flex flex-wrap gap-2">
                             <?php
                             $kelas_filter = '';
-                            if ($_SESSION['role'] == 1 && !empty($_SESSION['kelas_ids'])) {
+                            // Guru hanya lihat kelas yang dia pegang, admin/kepala sekolah semua kelas
+                            if ($role_id == 1 && !empty($_SESSION['kelas_ids'])) {
                                 $kelas_in = implode(",", array_map('intval', $_SESSION['kelas_ids']));
                                 $kelas_filter = " WHERE k.id IN ($kelas_in) ";
                             }
@@ -93,18 +128,20 @@
 
                 <!-- Tabel Progress + Tombol Download Rekap -->
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">Progress Siswa</h3>
-                        <div class="d-flex align-items-center" style="gap: 8px;">
+                    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                        <h3 class="card-title mb-2 mb-md-0">Progress Siswa</h3>
+                        <div class="d-flex flex-wrap align-items-center gap-2">
                             <input type="date" id="rekapStart" class="form-control form-control-sm" style="width: 120px;">
-                            <span>s/d</span>
+                            <span class="d-none d-md-inline">s/d</span>
                             <input type="date" id="rekapEnd" class="form-control form-control-sm" style="width: 120px;">
-                            <button type="button" class="btn btn-success btn-sm ms-2" id="btnDownloadRekapExcel">
-                                Download Rekap Excel
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm ms-2" id="btnDownloadRekapPDF">
-        Download Rekap PDF
-    </button>
+                            <div class="btn-group ms-0 ms-md-2" role="group">
+                                <button type="button" class="btn btn-success btn-sm" id="btnDownloadRekapExcel">
+                                    <i class="bi bi-file-earmark-excel"></i> Excel
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" id="btnDownloadRekapPDF">
+                                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -130,6 +167,20 @@
                 </div>
 
                 <?php include 'partials/footer.php'; ?>
+
+                <!-- Bootstrap Toast -->
+                <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+                  <div id="customToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                      <div class="toast-body">
+                        <span id="toastMessage">Silakan pilih rentang tanggal.</span>
+                      </div>
+                      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Bootstrap Toast -->
+
             </div>
         </div>
     </div>
@@ -233,7 +284,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <tbody>
 `;
                     data.forEach(k => {
-                        // Status verifikasi agar BENAR dan rapi
                         let statusVerifikasi = '';
                         if (k.status === 'Belum Checkpoint' || k.status_verifikasi === '-') {
                             statusVerifikasi = `<span class="badge bg-secondary">-</span>`;
@@ -331,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btnDownloadRekapExcel').addEventListener('click', function () {
         const activeBtn = document.querySelector('.filter-kelas.active');
         if (!activeBtn) {
-            alert("Silakan pilih kelas terlebih dahulu!");
+            showToast("Silakan pilih kelas terlebih dahulu!");
             return;
         }
         const kelasId = activeBtn.getAttribute('data-kelas-id');
@@ -339,27 +389,37 @@ document.addEventListener('DOMContentLoaded', function() {
         const end = document.getElementById('rekapEnd').value;
 
         if (!start || !end) {
-            alert('Silakan pilih rentang tanggal.');
+            showToast('Silakan pilih rentang tanggal.');
             return;
         }
         window.open(`rekap_kelas_excel.php?kelas_id=${kelasId}&start=${start}&end=${end}`, '_blank');
     });
-});
-document.getElementById('btnDownloadRekapPDF').addEventListener('click', function () {
-    const activeBtn = document.querySelector('.filter-kelas.active');
-    if (!activeBtn) {
-        alert("Silakan pilih kelas terlebih dahulu!");
-        return;
-    }
-    const kelasId = activeBtn.getAttribute('data-kelas-id');
-    const start = document.getElementById('rekapStart').value;
-    const end = document.getElementById('rekapEnd').value;
 
-    if (!start || !end) {
-        alert('Silakan pilih rentang tanggal.');
-        return;
+    // Tombol Download Rekap PDF Perkelas
+    document.getElementById('btnDownloadRekapPDF').addEventListener('click', function () {
+        const activeBtn = document.querySelector('.filter-kelas.active');
+        if (!activeBtn) {
+            showToast("Silakan pilih kelas terlebih dahulu!");
+            return;
+        }
+        const kelasId = activeBtn.getAttribute('data-kelas-id');
+        const start = document.getElementById('rekapStart').value;
+        const end = document.getElementById('rekapEnd').value;
+
+        if (!start || !end) {
+            showToast('Silakan pilih rentang tanggal.');
+            return;
+        }
+        window.open(`rekap_kelas_pdf.php?kelas_id=${kelasId}&tgl_mulai=${start}&tgl_selesai=${end}`, '_blank');
+    });
+
+    // Fungsi Bootstrap Toast
+    function showToast(message) {
+        document.getElementById('toastMessage').textContent = message;
+        var toastEl = document.getElementById('customToast');
+        var toast = new bootstrap.Toast(toastEl);
+        toast.show();
     }
-    window.open(`rekap_kelas_pdf.php?kelas_id=${kelasId}&tgl_mulai=${start}&tgl_selesai=${end}`, '_blank');
 });
 
 // Modal Tolak

@@ -1,18 +1,16 @@
 <?php
 require_once '../Starterkit/partials/config.php';
-require_once __DIR__ . '/../vendor/autoload.php'; // Path vendor, JANGAN diubah jika sudah benar
+require_once __DIR__ . '/../dompdf/autoload.inc.php'; // Ganti dengan path dompdf kamu
 
-use Mpdf\Mpdf; // HARUS ADA, agar new Mpdf() dikenali
+use Dompdf\Dompdf;
 
 // Ambil parameter dari GET
-$kelas_id = isset($_GET['kelas_id']) ? intval($_GET['kelas_id']) : 0;
-$tgl_mulai = isset($_GET['tgl_mulai']) ? $_GET['tgl_mulai'] : date('Y-m-01');
+$kelas_id   = isset($_GET['kelas_id']) ? intval($_GET['kelas_id']) : 0;
+$tgl_mulai  = isset($_GET['tgl_mulai']) ? $_GET['tgl_mulai'] : date('Y-m-01');
 $tgl_selesai = isset($_GET['tgl_selesai']) ? $_GET['tgl_selesai'] : date('Y-m-d');
 
 // Validasi
-if (!$kelas_id) {
-    die("Kelas tidak ditemukan.");
-}
+if (!$kelas_id) die("Kelas tidak ditemukan.");
 
 // Ambil nama kelas
 $q_kelas = mysqli_query($link, "SELECT nama_kelas FROM kelas WHERE id = $kelas_id");
@@ -113,9 +111,11 @@ foreach ($siswa_data as $id_siswa => $siswa) {
 }
 $html .= '</tbody></table>';
 
-// Output PDF
-// $mpdf = new Mpdf(['format' => 'A4-L']); 
-$mpdf->SetTitle("Rekap Kegiatan Kelas $nama_kelas");
-$mpdf->WriteHTML($html);
-$mpdf->Output("Rekap_Kegiatan_Kelas_$nama_kelas.pdf", 'I');
+// Output PDF pakai Dompdf
+$dompdf = new Dompdf();
+$dompdf->loadHtml($html);
+$dompdf->setPaper('A4', 'landscape'); // Bisa diganti 'portrait' kalau mau
+$dompdf->render();
+$dompdf->stream("Rekap_Kegiatan_Kelas_$nama_kelas.pdf", array("Attachment" => false));
+exit;
 ?>

@@ -1,4 +1,4 @@
-<?php include 'partials/session.php'; ?>
+<!-- <?php include 'partials/session.php'; ?>
 <?php include 'partials/main.php'; ?>
 
     <head>
@@ -30,4 +30,4 @@
         <script src="assets/js/app.js"></script>
 
     </body>
-</html>
+</html> -->

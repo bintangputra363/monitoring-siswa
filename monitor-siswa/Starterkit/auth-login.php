@@ -54,19 +54,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     while ($row = mysqli_fetch_assoc($result_kelas)) {
                                         $kelas_ids[] = $row['kelas_id'];
                                     }
-
-                                    $_SESSION["kelas_ids"] = $kelas_ids; // boleh kosong, artinya akses semua
+                                    $_SESSION["kelas_ids"] = $kelas_ids; // boleh kosong
                                     mysqli_stmt_close($stmt_kelas);
                                 }
                             }
 
                             // Redirect sesuai role
-                            if ($role == 2) {
+                            if ($role == 2) { // Siswa
                                 header("location: kegiatan-siswa.php");
                                 exit;
-                            } else {
+                            } elseif ($role == 1) { // Guru
                                 header("location: ../Admin/index.php");
                                 exit;
+                            } elseif ($role == 3) { // Admin
+                                header("location: ../Admin/index.php");
+                                exit;
+                            } elseif ($role == 4) { // Kepala Sekolah
+                                header("location: ../Admin/index.php");
+                                exit;
+                            } else {
+                                $useremail_err = "Role tidak dikenali. Hubungi admin!";
                             }
                         } else {
                             $password_err = "Password salah.";
@@ -78,11 +85,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 echo "Terjadi kesalahan. Silakan coba lagi nanti.";
             }
-
             mysqli_stmt_close($stmt);
         }
     }
-
     mysqli_close($link);
 }
 ?>
@@ -90,11 +95,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php include 'partials/main.php'; ?>
 
 <head>
-
     <?php includeFileWithVariables('partials/title-meta.php', array('title' => 'Login')); ?>
-
     <?php include 'partials/head-css.php'; ?>
-
+<style>
+    .authentication-bg { background: #232323 !important; }
+    .bg-overlay { display: none !important; }
+    .card, .card-body {
+        background: #303337 !important;
+        color: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+    }
+    .auth-logo { color: #27c480 !important; font-weight: 700; letter-spacing: 1px; }
+    .card-body h4, .card-body .mt-4 { color: #fff !important; font-weight: 500; letter-spacing: 0.5px; }
+    .form-control, .input-group-text {
+        background: #46484e !important;
+        color: #fff !important;
+        border-color: #444 !important;
+    }
+    .form-control::placeholder { color: #bbb !important; }
+    .btn-primary, .btn-outline-secondary {
+        background: #26b37b !important;
+        border-color: #26b37b !important;
+        color: #fff !important;
+    }
+    .btn-primary:hover, .btn-outline-secondary:hover {
+        background: #158a5c !important;
+        border-color: #158a5c !important;
+        color: #fff !important;
+    }
+    .text-muted { color: #ccc !important; }
+    .form-check-label, .form-check-input { color: #fff !important; }
+    .form-control:focus { box-shadow: 0 0 0 2px #27c48044; }
+</style>
 </head>
 
 <body>
@@ -108,22 +141,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <a href="index.php" class="logo-dark">
                                 <h1 class="auth-logo text-center">Monitoring</h1>
                             </a>
-
-
                             <h4 class="mt-4">Welcome Back !</h4>
                             <p class="text-muted">Sign in to continue.</p>
                         </div>
-
                         <div class="p-2 mt-5">
                             <form class="" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                 <div class="input-group auth-form-group-custom mb-3 <?= !empty($useremail_err) ? 'has-error' : ''; ?>">
-                                    <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1"><i class="mdi mdi-account-outline auti-custom-input-icon"></i></span>
+                                    <span class="input-group-text bg-primary bg-opacity-10 fs-16" id="basic-addon1">
+                                        <i class="mdi mdi-account-outline auti-custom-input-icon"></i>
+                                    </span>
                                     <input type="text" class="form-control" placeholder="Enter username" name="useremail" aria-label="Username" aria-describedby="basic-addon1">
-
                                 </div>
                                 <span class="text-danger"><?php echo $useremail_err; ?></span>
                                 <div class="input-group auth-form-group-custom mb-3 <?= !empty($password_err) ? 'has-error' : ''; ?>">
-                                    <span class="input-group-text bg-primary bg-opacity-10 fs-16" id="basic-addon2"><i class="mdi mdi-lock-outline auti-custom-input-icon"></i></span>
+                                    <span class="input-group-text bg-primary bg-opacity-10 fs-16" id="basic-addon2">
+                                        <i class="mdi mdi-lock-outline auti-custom-input-icon"></i>
+                                    </span>
                                     <input type="password" class="form-control" id="userpassword" name="password" placeholder="Enter password" aria-label="Username" aria-describedby="basic-addon1">
                                     <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
                                         <i class="fas fa-eye" id="toggleIcon"></i>
@@ -135,38 +168,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <input type="checkbox" class="form-check-input" id="customControlInline">
                                         <label class="form-check-label" for="customControlInline">Remember me</label>
                                     </div>
-                                    <!-- <div class="float-sm-end">
-                                        <a href="auth-recoverpw.php" class="text-muted"><i class="mdi mdi-lock me-1"></i> Forgot your password?</a>
-                                    </div> -->
                                 </div>
-
                                 <div class="pt-3 text-center">
                                     <button class="btn btn-primary w-xl waves-effect waves-light" type="submit">Log In</button>
                                 </div>
-
-                                <!-- <div class="mt-3 text-center">
-                                    <p class="mb-0">Don't have an account ? <a href="auth-register.php" class="fw-medium text-primary"> Register </a> </p>
-                                </div> -->
-
-                                <!-- <div class="mt-4 text-center">
-                                    <div class="signin-other-title position-relative">
-                                        <h5 class="mb-0 title">or</h5>
-                                    </div>
-                                    <div class="mt-4 pt-1 hstack gap-3">
-                                        <div class="vstack gap-2">
-                                            <button type="button" class="btn btn-label-info d-block"><i class="ri-facebook-fill fs-18 align-middle me-2"></i>Sign in with facebook</button>
-                                            <button type="button" class="btn btn-label-danger d-block"><i class="ri-google-fill fs-18 align-middle me-2"></i>Sign in with google</button>
-                                        </div>
-                                        <div class="vstack gap-2">
-                                            <button type="button" class="btn btn-label-dark d-block"><i class="ri-github-fill fs-18 align-middle me-2"></i>Sign in with github</button>
-                                            <button type="button" class="btn btn-label-success d-block"><i class="ri-twitter-fill fs-18 align-middle me-2"></i>Sign in with twitter</button>
-                                        </div>
-
-                                    </div>
-                                </div> -->
                             </form>
                         </div>
-
                         <div class="mt-5 text-center">
                             <p>©
                                 <script>
@@ -184,7 +191,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         }
                                     }
                                     document.write(new Date().getFullYear())
-                                </script> Monitor Siswa <i class="mdi mdi-heart text-danger"></i> by Elham Hacker
+                                </script> Monitor Siswa | Universitas Pamulang
                             </p>
                         </div>
                     </div>
@@ -192,11 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-
     <?php include 'partials/vendor-scripts.php'; ?>
-
     <script src="assets/js/app.js"></script>
-
 </body>
-
 </html>
