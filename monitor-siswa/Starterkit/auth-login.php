@@ -1,7 +1,7 @@
 <?php
-include 'partials/session.php';
-require_once "partials/config.php";
 
+require_once "partials/config.php";
+session_start();
 $useremail = $password = "";
 $useremail_err = $password_err = "";
 

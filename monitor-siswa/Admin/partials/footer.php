@@ -6,7 +6,7 @@
             </div>
             <div class="col-sm-6">
                 <div class="text-sm-end d-none d-sm-block">
-                    Monitor Siswa <i class="mdi mdi-heart text-danger"></i> by <a href="index.php" target="_blank" class="text-muted">Elham Hacker</a>
+                    Monitor Siswa <i class=" text-danger"></i> 
                 </div>
             </div>
         </div>

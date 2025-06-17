@@ -1,6 +1,8 @@
 <?php
 require_once '../Starterkit/partials/config.php';
-require_once __DIR__ . '/../dompdf/autoload.inc.php'; // Ganti dengan path dompdf kamu
+
+// Path dompdf pastikan sudah benar sesuai struktur folder kamu!
+require_once __DIR__ . '/../dompdf/autoload.inc.php';
 
 use Dompdf\Dompdf;
 
@@ -45,6 +47,7 @@ while ($k = mysqli_fetch_assoc($kegiatan_res)) {
 }
 
 // Ambil checkpoint
+// Pastikan status_verifikasi sudah ada di tabel!
 $checkpoint_sql = "
     SELECT ck.siswa_id, ck.kegiatan_id, DATE(ck.waktu_checkpoint) AS tgl, ck.status, ck.status_verifikasi
     FROM checkpoint_kegiatan ck

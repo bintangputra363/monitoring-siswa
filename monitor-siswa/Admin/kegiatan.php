@@ -18,22 +18,22 @@
                     <div class="col-12">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="fs-16 fw-semibold mb-1">Kegiatan Siswa</h4>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addKegiatanModal">Tambah Kegiatan</button>
+                            <?php if ($_SESSION['role'] != 1) { ?>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addKegiatanModal">Tambah Kegiatan</button>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
 
                 <?php if (isset($_SESSION['success'])): ?>
                     <div class="alert alert-success">
-                        <?php echo $_SESSION['success'];
-                        unset($_SESSION['success']); ?>
+                        <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
                     </div>
                 <?php endif; ?>
 
                 <?php if (isset($_SESSION['error'])): ?>
                     <div class="alert alert-danger">
-                        <?php echo $_SESSION['error'];
-                        unset($_SESSION['error']); ?>
+                        <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
                     </div>
                 <?php endif; ?>
 
@@ -51,21 +51,19 @@
                                                 <th style="width: 30%;">Deskripsi</th>
                                                 <th style="width: 15%;">Jam Mulai</th>
                                                 <th style="width: 15%;">Jam Selesai</th>
-                                                <th style="width: 15%;">Aksi</th>
+                                                <?php if ($_SESSION['role'] != 1) { ?>
+                                                    <th style="width: 15%;">Aksi</th>
+                                                <?php } ?>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                            // Include file koneksi database
                                             require_once '../Starterkit/partials/config.php';
-
-                                            // Query untuk mengambil data dari tabel kegiatan
                                             $sql = "SELECT id, nama_kegiatan, deskripsi, jam_mulai, jam_selesai FROM kegiatan ORDER BY jam_mulai ASC";
                                             $result = mysqli_query($link, $sql);
 
-                                            // Periksa apakah ada data
                                             if (mysqli_num_rows($result) > 0) {
-                                                $no = 1; // Nomor urut
+                                                $no = 1;
                                                 while ($row = mysqli_fetch_assoc($result)) {
                                                     echo "<tr>";
                                                     echo "<td>" . $no++ . "</td>";
@@ -73,7 +71,8 @@
                                                     echo "<td>" . htmlspecialchars($row['deskripsi']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['jam_mulai']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['jam_selesai']) . "</td>";
-                                                    echo "<td>
+                                                    if ($_SESSION['role'] != 1) {
+                                                        echo "<td>
                                                             <button class='btn btn-warning btn-sm' 
                                                                     data-bs-toggle='modal' 
                                                                     data-bs-target='#editKegiatanModal' 
@@ -91,13 +90,13 @@
                                                                 Hapus
                                                             </button>
                                                           </td>";
+                                                    }
                                                     echo "</tr>";
                                                 }
                                             } else {
-                                                echo "<tr><td colspan='6' class='text-center'>Tidak ada data kegiatan.</td></tr>";
+                                                $colspan = $_SESSION['role'] != 1 ? 6 : 5;
+                                                echo "<tr><td colspan='$colspan' class='text-center'>Tidak ada data kegiatan.</td></tr>";
                                             }
-
-                                            // Tutup koneksi
                                             mysqli_close($link);
                                             ?>
                                         </tbody>
@@ -112,6 +111,7 @@
         </div>
 
         <!-- Modal Tambah Kegiatan -->
+        <?php if ($_SESSION['role'] != 1) { ?>
         <div class="modal fade" id="addKegiatanModal" tabindex="-1" aria-labelledby="addKegiatanModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -129,7 +129,6 @@
                                 <label for="deskripsiKegiatan" class="form-label">Deskripsi</label>
                                 <textarea class="form-control" id="deskripsiKegiatan" name="deskripsi" required></textarea>
                             </div>
-
                             <div class="mb-3">
                                 <label for="jamKegiatan" class="form-label">Jam Mulai</label>
                                 <input type="time" class="form-control" id="jamKegiatan" name="jam_mulai" required>
@@ -147,8 +146,10 @@
                 </div>
             </div>
         </div>
+        <?php } ?>
 
         <!-- Modal Edit Kegiatan -->
+        <?php if ($_SESSION['role'] != 1) { ?>
         <div class="modal fade" id="editKegiatanModal" tabindex="-1" aria-labelledby="editKegiatanModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -184,8 +185,10 @@
                 </div>
             </div>
         </div>
+        <?php } ?>
 
         <!-- Modal Hapus Kegiatan -->
+        <?php if ($_SESSION['role'] != 1) { ?>
         <div class="modal fade" id="deleteKegiatanModal" tabindex="-1" aria-labelledby="deleteKegiatanModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -206,6 +209,7 @@
                 </div>
             </div>
         </div>
+        <?php } ?>
 
         <?php include 'partials/footer.php'; ?>
     </div>
@@ -214,101 +218,61 @@
 <?php include 'partials/vendor-scripts.php'; ?>
 
 <script src="assets/js/app.js"></script>
-
+<?php if ($_SESSION['role'] != 1) { ?>
 <script>
-    // Validasi form sebelum submit
     document.getElementById('addKegiatanForm').addEventListener('submit', function(event) {
         let isValid = true;
-
-        // Ambil semua input dalam form
         const inputs = this.querySelectorAll('input, textarea');
         inputs.forEach(input => {
             if (!input.value.trim()) {
                 isValid = false;
-                input.classList.add('is-invalid'); // Tambahkan kelas untuk menandai error
+                input.classList.add('is-invalid');
             } else {
-                input.classList.remove('is-invalid'); // Hapus kelas error jika valid
+                input.classList.remove('is-invalid');
             }
         });
-
-        // Validasi Jam Selesai harus lebih besar dari Jam Mulai
         const jamMulai = this.querySelector('#jamKegiatan').value;
         const jamSelesai = this.querySelector('#jamSelesai').value;
-
-        // if (jamMulai && jamSelesai && jamMulai >= jamSelesai) {
-        //     isValid = false;
-        //     alert('Jam Selesai harus lebih besar dari Jam Mulai.');
-        // }
-
-        // Jika tidak valid, cegah submit
         if (!isValid) {
             event.preventDefault();
         }
     });
-</script>
 
-<script>
-    // Validasi form sebelum submit
     document.getElementById('editKegiatanForm').addEventListener('submit', function(event) {
         let isValid = true;
-
-        // Validasi Jam Selesai harus lebih besar dari Jam Mulai
         const jamMulai = this.querySelector('#editJamKegiatan').value;
         const jamSelesai = this.querySelector('#editJamSelesai').value;
-
         if (jamMulai && jamSelesai && jamMulai >= jamSelesai) {
             isValid = false;
             alert('Jam Selesai harus lebih besar dari Jam Mulai.');
         }
-
-        // Jika tidak valid, cegah submit
         if (!isValid) {
             event.preventDefault();
         }
     });
-</script>
 
-<script>
-    // Ambil elemen modal edit
     const editModal = document.getElementById('editKegiatanModal');
-
-    // Tambahkan event listener ketika modal akan ditampilkan
     editModal.addEventListener('show.bs.modal', function(event) {
-        // Tombol yang diklik
         const button = event.relatedTarget;
-
-        // Ambil data dari atribut data-*
         const id = button.getAttribute('data-id');
         const nama = button.getAttribute('data-nama');
         const deskripsi = button.getAttribute('data-deskripsi');
         const jamMulai = button.getAttribute('data-jam-mulai');
         const jamSelesai = button.getAttribute('data-jam-selesai');
-
-        // Isi form di modal dengan data
         editModal.querySelector('#editId').value = id;
         editModal.querySelector('#editNamaKegiatan').value = nama;
         editModal.querySelector('#editDeskripsiKegiatan').value = deskripsi;
         editModal.querySelector('#editJamKegiatan').value = jamMulai;
         editModal.querySelector('#editJamSelesai').value = jamSelesai;
     });
-</script>
 
-<script>
-    // Ambil elemen modal hapus
     const deleteModal = document.getElementById('deleteKegiatanModal');
-
-    // Tambahkan event listener ketika modal akan ditampilkan
     deleteModal.addEventListener('show.bs.modal', function(event) {
-        // Tombol yang diklik
         const button = event.relatedTarget;
-
-        // Ambil data dari atribut data-id
         const id = button.getAttribute('data-id');
-
-        // Isi form di modal dengan ID
         deleteModal.querySelector('#deleteId').value = id;
     });
 </script>
+<?php } ?>
 </body>
-
 </html>

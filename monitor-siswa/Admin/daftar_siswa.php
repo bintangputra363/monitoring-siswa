@@ -8,11 +8,8 @@
     <style>
         .filter-kelas.active {
             background-color: #4CAF50;
-            /* Warna hijau */
             color: #fff;
-            /* Warna teks putih */
             border-color: #4CAF50;
-            /* Warna border hijau */
         }
     </style>
 </head>
@@ -29,7 +26,15 @@
                     <div class="col-12">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="fs-16 fw-semibold mb-1">Daftar Siswa</h4>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSiswaModal">Tambah Siswa</button>
+                            <?php
+                            // Guru hanya bisa tambah siswa ke kelas yang dia pegang
+                            $allowTambah = true;
+                            if ($_SESSION['role'] == 1 && empty($_SESSION['kelas_ids'])) {
+                                $allowTambah = false;
+                            }
+                            if ($allowTambah) { ?>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSiswaModal">Tambah Siswa</button>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -38,7 +43,13 @@
                     <div class="col-12">
                         <div class="d-flex flex-wrap gap-2">
                             <?php
-                            $kelas_sql = "SELECT id, nama_kelas FROM kelas ORDER BY nama_kelas ASC";
+                            // Jika guru, hanya tampilkan kelas yang dia pegang
+                            if ($_SESSION['role'] == 1 && !empty($_SESSION['kelas_ids'])) {
+                                $kelas_in = implode(",", array_map('intval', $_SESSION['kelas_ids']));
+                                $kelas_sql = "SELECT id, nama_kelas FROM kelas WHERE id IN ($kelas_in) ORDER BY nama_kelas ASC";
+                            } else {
+                                $kelas_sql = "SELECT id, nama_kelas FROM kelas ORDER BY nama_kelas ASC";
+                            }
                             $kelas_result = mysqli_query($link, $kelas_sql);
 
                             if (mysqli_num_rows($kelas_result) > 0) {
@@ -55,15 +66,13 @@
 
                 <?php if (isset($_SESSION['success'])): ?>
                     <div class="alert alert-success">
-                        <?php echo $_SESSION['success'];
-                        unset($_SESSION['success']); ?>
+                        <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
                     </div>
                 <?php endif; ?>
 
                 <?php if (isset($_SESSION['error'])): ?>
                     <div class="alert alert-danger">
-                        <?php echo $_SESSION['error'];
-                        unset($_SESSION['error']); ?>
+                        <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
                     </div>
                 <?php endif; ?>
 
@@ -97,7 +106,6 @@
             </div>
         </div>
 
-
         <!-- Modal Tambah Siswa -->
         <div class="modal fade" id="addSiswaModal" tabindex="-1" aria-labelledby="addSiswaModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -117,7 +125,13 @@
                                 <select class="form-select" id="kelasSiswa" name="kelas_id" required>
                                     <option value="">-- Pilih Kelas --</option>
                                     <?php
-                                    $kelasQuery = "SELECT id, nama_kelas FROM kelas ORDER BY nama_kelas ASC";
+                                    // Filter kelas yang bisa dipilih
+                                    if ($_SESSION['role'] == 1 && !empty($_SESSION['kelas_ids'])) {
+                                        $kelas_in = implode(",", array_map('intval', $_SESSION['kelas_ids']));
+                                        $kelasQuery = "SELECT id, nama_kelas FROM kelas WHERE id IN ($kelas_in) ORDER BY nama_kelas ASC";
+                                    } else {
+                                        $kelasQuery = "SELECT id, nama_kelas FROM kelas ORDER BY nama_kelas ASC";
+                                    }
                                     $kelasResult = mysqli_query($link, $kelasQuery);
                                     while ($kelasRow = mysqli_fetch_assoc($kelasResult)) {
                                         echo "<option value='" . $kelasRow['id'] . "'>" . htmlspecialchars($kelasRow['nama_kelas']) . "</option>";
@@ -167,7 +181,12 @@
                                 <select class="form-select" id="editKelasSiswa" name="kelas_id" required>
                                     <option value="">-- Pilih Kelas --</option>
                                     <?php
-                                    $kelasQuery = "SELECT id, nama_kelas FROM kelas ORDER BY nama_kelas ASC";
+                                    if ($_SESSION['role'] == 1 && !empty($_SESSION['kelas_ids'])) {
+                                        $kelas_in = implode(",", array_map('intval', $_SESSION['kelas_ids']));
+                                        $kelasQuery = "SELECT id, nama_kelas FROM kelas WHERE id IN ($kelas_in) ORDER BY nama_kelas ASC";
+                                    } else {
+                                        $kelasQuery = "SELECT id, nama_kelas FROM kelas ORDER BY nama_kelas ASC";
+                                    }
                                     $kelasResult = mysqli_query($link, $kelasQuery);
                                     while ($kelasRow = mysqli_fetch_assoc($kelasResult)) {
                                         echo "<option value='" . $kelasRow['id'] . "'>" . htmlspecialchars($kelasRow['nama_kelas']) . "</option>";
@@ -226,7 +245,6 @@
 <?php include 'partials/vendor-scripts.php'; ?>
 
 <script src="assets/js/app.js"></script>
-
 <script>
     // Modal Edit Siswa
     const editSiswaModal = document.getElementById('editSiswaModal');
@@ -234,49 +252,65 @@
         const button = event.relatedTarget;
         const userId = button.getAttribute('data-user-id');
         const nama = button.getAttribute('data-nama');
-        const kelas = button.getAttribute('data-kelas');
-        const kelasId = button.getAttribute('data-kelas-id'); // Ambil kelas_id siswa
-
+        const kelasId = button.getAttribute('data-kelas-id');
         const username = button.getAttribute('data-username');
         const email = button.getAttribute('data-email');
 
         editSiswaModal.querySelector('#editUserId').value = userId;
         editSiswaModal.querySelector('#editNamaSiswa').value = nama;
-        // editSiswaModal.querySelector('#editKelasSiswa').value = kelasId;
+        editSiswaModal.querySelector('#editKelasSiswa').value = kelasId;
         editSiswaModal.querySelector('#editUsernameSiswa').value = username;
         editSiswaModal.querySelector('#editEmailSiswa').value = email;
-        const kelasDropdown = editSiswaModal.querySelector('#editKelasSiswa');
-        kelasDropdown.value = kelasId; // 
     });
 
     // Modal Hapus Siswa
     const deleteSiswaModal = document.getElementById('deleteSiswaModal');
     deleteSiswaModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget; // Tombol yang memicu modal
-        const userId = button.getAttribute('data-user-id'); // Ambil user_id dari atribut tombol
-        deleteSiswaModal.querySelector('#deleteUserId').value = userId; // Isi input hidden dengan user_id
+        const button = event.relatedTarget;
+        const userId = button.getAttribute('data-user-id');
+        deleteSiswaModal.querySelector('#deleteUserId').value = userId;
     });
 
     // Filter Kelas dan Tampilkan Data Siswa
     document.querySelectorAll('.filter-kelas').forEach(button => {
         button.addEventListener('click', function() {
             const kelasId = this.getAttribute('data-kelas-id');
-
-            // Hapus kelas 'active' dari semua tombol
             document.querySelectorAll('.filter-kelas').forEach(btn => btn.classList.remove('active'));
-
-            // Tambahkan kelas 'active' ke tombol yang diklik
             this.classList.add('active');
 
-            // Kirim permintaan AJAX untuk memuat data siswa berdasarkan ID kelas
             fetch(`partials/get_siswa.php?kelas_id=${kelasId}`)
                 .then(response => response.json())
                 .then(data => {
                     const tbody = document.querySelector('#siswaTable tbody');
-                    tbody.innerHTML = ''; // Kosongkan tabel sebelum memuat data baru
+                    tbody.innerHTML = '';
 
                     if (data.length > 0) {
                         data.forEach((siswa, index) => {
+                            // Jika guru, pastikan hanya siswa kelas yang dia pegang yang bisa di-edit/hapus
+                            let actionBtn = '';
+                            <?php if ($_SESSION['role'] == 1) { ?>
+                                const allowedKelas = <?php echo json_encode($_SESSION['kelas_ids'] ?? []); ?>;
+                                if (allowedKelas.includes(parseInt(siswa.kelas_id))) {
+                                    actionBtn = `
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSiswaModal"
+                                            data-user-id="${siswa.user_id}" data-nama="${siswa.nama_siswa}" data-kelas-id="${siswa.kelas_id}"
+                                            data-username="${siswa.username}" data-email="${siswa.useremail}">Edit</button>
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteSiswaModal"
+                                            data-user-id="${siswa.user_id}">Hapus</button>
+                                    `;
+                                } else {
+                                    actionBtn = `<span class="text-muted">-</span>`;
+                                }
+                            <?php } else { ?>
+                                actionBtn = `
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSiswaModal"
+                                        data-user-id="${siswa.user_id}" data-nama="${siswa.nama_siswa}" data-kelas-id="${siswa.kelas_id}"
+                                        data-username="${siswa.username}" data-email="${siswa.useremail}">Edit</button>
+                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteSiswaModal"
+                                        data-user-id="${siswa.user_id}">Hapus</button>
+                                `;
+                            <?php } ?>
+
                             tbody.innerHTML += `
                                 <tr>
                                     <td>${index + 1}</td>
@@ -284,13 +318,7 @@
                                     <td>${siswa.nama_kelas}</td>
                                     <td>${siswa.username}</td>
                                     <td>${siswa.useremail}</td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSiswaModal"
-                                            data-user-id="${siswa.user_id}" data-nama="${siswa.nama_siswa}" data-kelas-id="${siswa.kelas_id}"
-                                            data-username="${siswa.username}" data-email="${siswa.useremail}">Edit</button>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteSiswaModal"
-                                            data-user-id="${siswa.user_id}">Hapus</button>
-                                    </td>
+                                    <td>${actionBtn}</td>
                                 </tr>
                             `;
                         });
@@ -306,5 +334,4 @@
     });
 </script>
 </body>
-
 </html>

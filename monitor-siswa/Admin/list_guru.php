@@ -3,6 +3,8 @@
 <?php require_once '../Starterkit/partials/config.php'; ?>
 
 <?php
+$role = $_SESSION['role'] ?? 0; // 1: Guru, 3: Admin, dst.
+
 $sql = "
     SELECT 
         u.id AS guru_id,
@@ -45,7 +47,9 @@ if (!$result) {
                     <div class="col-12">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="fs-16 fw-semibold mb-1">Mapping Guru</h4>
-                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMappingModal">Mapping Guru</button>
+                            <?php if ($role != 1): // Bukan guru, boleh tambah mapping guru ?>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMappingModal">Mapping Guru</button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -69,48 +73,53 @@ if (!$result) {
                             <div class="card-body">
                               <div class="table-responsive-md">
                                 <table class="table text-nowrap mb-0">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Guru</th>
-                <th>Kelas</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            if (mysqli_num_rows($result) > 0) {
-                $no = 1;
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<tr>";
-                    echo "<td>" . $no++ . "</td>";
-                    echo "<td>" . htmlspecialchars($row['nama_guru']) . "</td>";
-                    echo "<td>" . ($row['kelas'] ? htmlspecialchars($row['kelas']) : 'Belum ada kelas') . "</td>";
-                    echo "<td>
-                            <button class='btn btn-warning btn-sm' 
-                                    data-bs-toggle='modal' 
-                                    data-bs-target='#editMappingModal' 
-                                    data-id='" . $row['guru_id'] . "' 
-                                    data-nama='" . htmlspecialchars($row['nama_guru']) . "' 
-                                    data-kelas='" . htmlspecialchars($row['kelas']) . "'>
-                                Edit
-                            </button>
-                            <button class='btn btn-danger btn-sm' 
-                                    data-bs-toggle='modal' 
-                                    data-bs-target='#deleteGuruModal' 
-                                    data-id='" . $row['guru_id'] . "'>
-                                Hapus
-                            </button>
-                          </td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr><td colspan='4' class='text-center'>Tidak ada data guru.</td></tr>";
-            }
-            ?>
-        </tbody>
-    </table>
-                                </div>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Guru</th>
+                                        <th>Kelas</th>
+                                        <?php if ($role != 1): ?>
+                                            <th>Aksi</th>
+                                        <?php endif; ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    if (mysqli_num_rows($result) > 0) {
+                                        $no = 1;
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            echo "<tr>";
+                                            echo "<td>" . $no++ . "</td>";
+                                            echo "<td>" . htmlspecialchars($row['nama_guru']) . "</td>";
+                                            echo "<td>" . ($row['kelas'] ? htmlspecialchars($row['kelas']) : 'Belum ada kelas') . "</td>";
+                                            if ($role != 1) { // ADMIN/SUPERADMIN/KEPSEK: Bisa Edit/Hapus
+                                                echo "<td>
+                                                        <button class='btn btn-warning btn-sm' 
+                                                                data-bs-toggle='modal' 
+                                                                data-bs-target='#editMappingModal' 
+                                                                data-id='" . $row['guru_id'] . "' 
+                                                                data-nama='" . htmlspecialchars($row['nama_guru']) . "' 
+                                                                data-kelas='" . htmlspecialchars($row['kelas']) . "'>
+                                                            Edit
+                                                        </button>
+                                                        <button class='btn btn-danger btn-sm' 
+                                                                data-bs-toggle='modal' 
+                                                                data-bs-target='#deleteGuruModal' 
+                                                                data-id='" . $row['guru_id'] . "'>
+                                                            Hapus
+                                                        </button>
+                                                      </td>";
+                                            }
+                                            echo "</tr>";
+                                        }
+                                    } else {
+                                        $colspan = $role != 1 ? 4 : 3;
+                                        echo "<tr><td colspan='$colspan' class='text-center'>Tidak ada data guru.</td></tr>";
+                                    }
+                                    ?>
+                                </tbody>
+                                </table>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -127,6 +136,8 @@ if (!$result) {
 
 <script src="assets/js/app.js"></script>
 
+<!-- Modal Tambah Mapping Guru -->
+<?php if ($role != 1): ?>
 <div class="modal fade" id="addMappingModal" tabindex="-1" aria-labelledby="addMappingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -171,7 +182,10 @@ if (!$result) {
         </div>
     </div>
 </div>
+<?php endif; ?>
 
+<!-- Modal Edit Mapping Guru -->
+<?php if ($role != 1): ?>
 <div class="modal fade" id="editMappingModal" tabindex="-1" aria-labelledby="editMappingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -208,7 +222,10 @@ if (!$result) {
         </div>
     </div>
 </div>
+<?php endif; ?>
 
+<!-- Modal Delete Guru -->
+<?php if ($role != 1): ?>
 <div class="modal fade" id="deleteGuruModal" tabindex="-1" aria-labelledby="deleteGuruModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -229,40 +246,33 @@ if (!$result) {
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        <?php if ($role != 1): ?>
         const editMappingModal = document.getElementById('editMappingModal');
-
-        // Event listener untuk mengisi modal edit
         editMappingModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget; // Tombol yang memicu modal
-            const guruId = button.getAttribute('data-id'); // Ambil ID guru
-            const guruNama = button.getAttribute('data-nama'); // Ambil nama guru
-            const kelas = button.getAttribute('data-kelas'); // Ambil kelas (dipisahkan koma)
-
-            // Isi data ke dalam modal
+            const button = event.relatedTarget;
+            const guruId = button.getAttribute('data-id');
+            const guruNama = button.getAttribute('data-nama');
+            const kelas = button.getAttribute('data-kelas');
             editMappingModal.querySelector('#editGuruId').value = guruId;
             editMappingModal.querySelector('#editGuruNama').value = guruNama;
-
-            // Set nilai dropdown kelas
             const kelasDropdown = editMappingModal.querySelector('#editKelas');
-            const kelasArray = kelas.split(', '); // Pisahkan kelas menjadi array
+            const kelasArray = kelas.split(', ');
             Array.from(kelasDropdown.options).forEach(option => {
                 option.selected = kelasArray.includes(option.text);
             });
         });
 
         const deleteGuruModal = document.getElementById('deleteGuruModal');
-
-        // Event listener untuk mengisi modal delete
         deleteGuruModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget; // Tombol yang memicu modal
-            const guruId = button.getAttribute('data-id'); // Ambil ID guru
-
-            // Isi data ke dalam modal
+            const button = event.relatedTarget;
+            const guruId = button.getAttribute('data-id');
             deleteGuruModal.querySelector('#deleteGuruId').value = guruId;
         });
+        <?php endif; ?>
     });
 </script>
 </body>
