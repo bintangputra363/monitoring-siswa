@@ -10,7 +10,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
-// Cek role user untuk greeting dan akses fitur (boleh dimodifikasi sesuai kebutuhan)
+// Cek role user untuk greeting dan akses fitur
 $role_id = $_SESSION['role']; // id sesuai tabel roles
 $nama_role = '';
 switch ($role_id) {
@@ -21,7 +21,6 @@ switch ($role_id) {
     default: $nama_role = 'User'; break;
 }
 ?>
-
 <head>
     <?php includeFileWithVariables('partials/title-meta.php', array('title' => 'Dashboard')); ?>
     <?php include 'partials/head-css.php'; ?>
@@ -48,12 +47,9 @@ switch ($role_id) {
         }
     </style>
 </head>
-
 <?php include 'partials/body.php'; ?>
-
 <div id="layout-wrapper">
     <?php include 'partials/menu.php'; ?>
-
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
@@ -73,13 +69,81 @@ switch ($role_id) {
                         } else {
                             $waktu = "SELAMAT MALAM";
                         }
-
                         $nama_user = strtoupper($_SESSION['username']);
                         echo "<h4 class='fw-bold'>$waktu, <span class='text-success'>$nama_user</span> <span class='badge bg-info ms-2'>$nama_role</span>!</h4>";
                         echo "<p>Berikut adalah daftar monitoring siswa Anda hari ini.</p>";
                         ?>
                     </div>
                 </div>
+
+                <?php
+                // Hanya untuk admin & kepala sekolah
+                if ($role_id == 3 || $role_id == 4):
+                    // Jumlah guru (role_user = 1 pada users)
+                    $jml_guru = mysqli_fetch_assoc(mysqli_query($link, "SELECT COUNT(*) AS total FROM users WHERE role_user = 1"))['total'];
+                    // Jumlah siswa
+                    $jml_siswa = mysqli_fetch_assoc(mysqli_query($link, "SELECT COUNT(*) AS total FROM siswa"))['total'];
+                    // Data jumlah siswa per kelas
+                    $data_kelas = [];
+                    $result = mysqli_query($link, "SELECT nama_kelas, (SELECT COUNT(*) FROM siswa WHERE kelas_id=kelas.id) AS jumlah FROM kelas ORDER BY nama_kelas");
+                    while ($row = mysqli_fetch_assoc($result)) $data_kelas[] = $row;
+                ?>
+                <div class="row mb-4">
+                    <div class="col-md-6 col-12 mb-3 mb-md-0">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center" style="width:48px; height:48px;">
+                                    <i class="bi bi-person-badge" style="font-size:1.5rem"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Jumlah Guru</h6>
+                                    <h3 class="fw-bold mb-0"><?= $jml_guru ?></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <div class="rounded-circle bg-success text-white d-flex justify-content-center align-items-center" style="width:48px; height:48px;">
+                                    <i class="bi bi-people" style="font-size:1.5rem"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Jumlah Siswa</h6>
+                                    <h3 class="fw-bold mb-0"><?= $jml_siswa ?></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Grafik siswa per kelas -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Grafik Jumlah Siswa per Kelas</h5>
+                                <div id="chartSiswaKelas" style="height: 300px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+                <script>
+                const dataKelas = <?= json_encode($data_kelas) ?>;
+                let namaKelas = dataKelas.map(x => x.nama_kelas);
+                let jumlah = dataKelas.map(x => Number(x.jumlah));
+                var options = {
+                    chart: { type: 'bar', height: 250 },
+                    series: [{ name: "Jumlah Siswa", data: jumlah }],
+                    xaxis: { categories: namaKelas },
+                    colors: ['#4CAF50'],
+                    plotOptions: { bar: { borderRadius: 6, columnWidth: '20%' }},
+                    dataLabels: { enabled: true }
+                };
+                var chart = new ApexCharts(document.querySelector("#chartSiswaKelas"), options);
+                chart.render();
+                </script>
+                <?php endif; ?>
 
                 <!-- Tombol Kelas -->
                 <div class="row mb-1">
@@ -92,7 +156,6 @@ switch ($role_id) {
                                 $kelas_in = implode(",", array_map('intval', $_SESSION['kelas_ids']));
                                 $kelas_filter = " WHERE k.id IN ($kelas_in) ";
                             }
-
                             $kelas_sql = "
                                 SELECT 
                                     k.id AS kelas_id,
@@ -114,7 +177,6 @@ switch ($role_id) {
                             if (!$kelas_result) {
                                 die('QUERY ERROR: ' . mysqli_error($link));
                             }
-
                             while ($kelas_row = mysqli_fetch_assoc($kelas_result)) {
                                 echo "<div class='text-center'>";
                                 echo "<button class='btn btn-outline-primary filter-kelas' data-kelas-id='" . htmlspecialchars($kelas_row['kelas_id']) . "'>" . htmlspecialchars($kelas_row['nama_kelas']) . "</button>";
@@ -237,7 +299,6 @@ switch ($role_id) {
 <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
 <script src="assets/js/pages/dashboard.init.js"></script>
 <script src="assets/js/app.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const filterDateInput = document.getElementById('filterDate');
